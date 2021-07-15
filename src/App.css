@@ -4,20 +4,32 @@
  */
 body {
   position: relative;
-  color: white;
+  /* color: white; */
   height: 100vh;
-  background: linear-gradient(
+  /* background: linear-gradient(
     200.96deg,
     #fedc2a -29.09%,
     #dd5789 51.77%,
     #7a2c9e 129.35%
-  );
+  ); */
   font-family: sans-serif;
   overflow-y: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+/* import '~react-h5-audio-player/lib/styles.css'; */
+
+/* .my {
+  color: red;
+  background: linear-gradient(
+    200.96deg,
+    #fedc2a -29.09%,
+    #dd5789 51.77%,
+    #7a2c9e 129.35%
+  );
+} */
 
 button {
   background-color: white;

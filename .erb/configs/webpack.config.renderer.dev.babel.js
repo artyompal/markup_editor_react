@@ -69,7 +69,7 @@ export default merge(baseConfig, {
         ],
       },
       {
-        test: /\.global\.css$/,
+        test: /\.css$/,
         use: [
           {
             loader: 'style-loader',
@@ -82,7 +82,7 @@ export default merge(baseConfig, {
           },
         ],
       },
-      {
+      /* {
         test: /^((?!\.global).)*\.css$/,
         use: [
           {
@@ -99,10 +99,10 @@ export default merge(baseConfig, {
             },
           },
         ],
-      },
+      }, */
       // SASS support - compile all .global.scss files and pipe it to style.css
       {
-        test: /\.global\.(scss|sass)$/,
+        test: /\.(scss|sass)$/,
         use: [
           {
             loader: 'style-loader',
@@ -118,7 +118,7 @@ export default merge(baseConfig, {
           },
         ],
       },
-      // SASS support - compile all other .scss files and pipe it to style.css
+      /* // SASS support - compile all other .scss files and pipe it to style.css
       {
         test: /^((?!\.global).)*\.(scss|sass)$/,
         use: [
@@ -142,7 +142,7 @@ export default merge(baseConfig, {
             loader: 'sass-loader',
           },
         ],
-      },
+      }, */
       // WOFF Font
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
