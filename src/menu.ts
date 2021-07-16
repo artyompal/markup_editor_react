@@ -1,10 +1,4 @@
-import {
-  app,
-  Menu,
-  shell,
-  BrowserWindow,
-  MenuItemConstructorOptions,
-} from 'electron';
+import {app, Menu, dialog, shell, BrowserWindow, MenuItemConstructorOptions} from 'electron';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -200,6 +194,21 @@ export default class MenuBuilder {
           {
             label: '&Open',
             accelerator: 'Ctrl+O',
+            click: (item: Electron.MenuItem, focusedWindow: Electron.BrowserWindow) => {
+              const filters = [
+                { "name": "Music files", "extensions": ["mp3", "wav"] },
+                { "name": "All", "extensions": ["*"] },
+              ];
+
+              const options = {title: 'Select music', properties: ['openFile'],
+                               filters: filters };
+              const filenames = dialog.showOpenDialogSync(focusedWindow, options)
+
+              if (filenames) {
+                console.log('opened', filenames);
+                focusedWindow.webContents.send("openAudio", filenames[0]);
+              }
+            }
           },
           {
             label: '&Close',
