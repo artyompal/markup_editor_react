@@ -205,8 +205,8 @@ export default class MenuBuilder {
               const filenames = dialog.showOpenDialogSync(focusedWindow, options)
 
               if (filenames) {
-                console.log('opened', filenames);
-                focusedWindow.webContents.send("openAudio", filenames[0]);
+                // console.log('showOpenDialogSync returned:', filenames);
+                focusedWindow.webContents.send("open_audio", filenames[0]);
               }
             }
           },
