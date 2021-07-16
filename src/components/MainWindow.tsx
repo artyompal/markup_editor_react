@@ -16,12 +16,9 @@ export class MainWindow extends React.Component {
   open_audio(filename: string) {
       console.log('opening', filename);
       this.setState({...this.state, 'file': 'file://' + filename});
-      // console.log('new state', this.state);
   }
 
   render() {
-    // console.log('render(): state', this.state);
-
     if (!this.state.file) {
       return null;
     }
@@ -29,7 +26,7 @@ export class MainWindow extends React.Component {
     return (
       <div>
         <div className="Application">
-          <AudioPlayer style={styles.player} url={this.state.file}/>
+          <AudioPlayer style={styles.player} src={this.state.file}/>
         </div>
       </div>
     );
