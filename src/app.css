@@ -1,35 +1,50 @@
-/*
- * @NOTE: Prepend a `~` to css file paths that are in your node_modules
- *        See https://github.com/webpack-contrib/sass-loader#imports
- */
+
 body {
+  font-family: sans-serif;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
+.svg-holder {
   position: relative;
-  /* color: white; */
+  height: 0;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100%;
+}
+.svg-block {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+}
+
+.player {
+  width: 100%;
+  allgn: center;
+  position: absolute;
+  bottom: 0;
+}
+
+/* body {
+  position: relative;
+  // color: white;
   height: 100vh;
   /* background: linear-gradient(
     200.96deg,
     #fedc2a -29.09%,
     #dd5789 51.77%,
     #7a2c9e 129.35%
-  ); */
+  ); *
   font-family: sans-serif;
   overflow-y: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
-/* import '~react-h5-audio-player/lib/styles.css'; */
-
-/* .my {
-  color: red;
-  background: linear-gradient(
-    200.96deg,
-    #fedc2a -29.09%,
-    #dd5789 51.77%,
-    #7a2c9e 129.35%
-  );
-} */
 
 button {
   background-color: white;
@@ -69,4 +84,4 @@ a:hover {
   justify-content: center;
   align-items: center;
   margin: 20px 0;
-}
+} */

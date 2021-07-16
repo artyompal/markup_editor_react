@@ -36,21 +36,15 @@ export class MainWindow extends React.Component {
     }
 
     return (
-      <div>
-        <svg>
-          <image href={this.state.spectrum_file} />
-        </svg>
-        <div className="Application">
-          <AudioPlayer style={styles.player} src={this.state.mp3_file}/>
+      <div className="Application">
+        <div className="svg-holder">
+          <svg className="svg-block">
+            <image href={this.state.spectrum_file}  preserveAspectRatio="none" width="100%"
+                   height="100%" />
+          </svg>
         </div>
+        <AudioPlayer className="player" src={this.state.mp3_file}/>
       </div>
     );
-  }
-}
-
-const styles = {
-  player: {
-    width: '1000px',
-    allgn: 'center',
   }
 }
