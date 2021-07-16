@@ -23,7 +23,7 @@ export class MainWindow extends React.Component {
 
       const spectrum_file = tmpNameSync({postfix: '.png'});
       console.log('writing spectrogram to', spectrum_file);
-      spawnSync('python', ['gen_spectrogram.py', spectrum_file, '4_non_blondes.mp3'],
+      spawnSync('python', ['gen_spectrogram.py', spectrum_file, mp3_file],
         {cwd: '../ml_auto_scores/'});
 
       this.setState({...this.state,
