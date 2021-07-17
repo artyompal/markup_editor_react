@@ -218,6 +218,7 @@
     "electron-log": "^4.2.4",
     "electron-updater": "^4.3.4",
     "history": "^5.0.0",
+    "image-size": "^1.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-h5-audio-player": "^3.7.1",
