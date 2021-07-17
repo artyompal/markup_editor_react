@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import icon from '../assets/icon.svg';
 import './app.css';
 
-import { MainWindow } from 'components/MainWindow';
+import { MainWindow } from 'components/main_window';
 
 const Application = () => {
   return (
