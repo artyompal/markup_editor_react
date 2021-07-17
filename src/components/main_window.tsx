@@ -48,7 +48,7 @@ export default class MainWindow extends React.Component {
     const transform = `scale(${scale},1) translate(${-offset},0)`;
 
     return (
-      <div className="Application">
+      <div>
         <Spectrogram spectrum_file={this.state.spectrum_file}
           width={this.state.spectrum_width} height={this.state.spectrum_height} />
         <AudioPlayer className="player" src={this.state.mp3_file} ref={this.player}

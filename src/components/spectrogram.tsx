@@ -7,19 +7,17 @@ export default class Spectrogram extends React.Component {
     }
 
     const scale = 1, offset = 0;
-    const transform = `scale(${scale},1) translate(${-offset},0)`;
+    const transform = `scale(1, ${scale}) translate(${-offset},0)`;
+    const w = this.props.width, h = this.props.height;
 
     return (
-      <div className="svg-holder">
-        <svg className="svg-block" viewBox="0 0 100 100">
-          <defs>
-            <clipPath id="cut-off">
-              <rect x="0" y="0" width="100" height="100" />
-            </clipPath>
-          </defs>
-          <image href={this.props.spectrum_file} preserveAspectRatio="none"
-             clipPath="url(#cut-off)" transform={transform} />
-        </svg>
+      <div className="svg-outer-holder">
+        <div className="svg-holder">
+          <svg className="svg-block" width={w} >
+            <image href={this.props.spectrum_file} preserveAspectRatio="none"
+              x={0} y={0} width={w} height={h} transform={transform} />
+          </svg>
+        </div>
       </div>
     );
   }

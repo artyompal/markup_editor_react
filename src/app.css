@@ -7,19 +7,31 @@ body {
   align-items: center;
 }
 
-.svg-holder {
+.svg-outer-holder {
   position: relative;
-  height: 0;
+  height: 100%;
   width: 100%;
   padding: 0;
   padding-bottom: 100%;
 }
+.svg-holder {
+  position: relative;
+  height: 88vh; /* FIXME: hardcoded size of the player */
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
 .svg-block {
   position: absolute;
   height: 100%;
-  width: 100%;
-  left: 0;
   top: 0;
+  overflow: hidden;
+}
+
+image {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  overflow: hidden;
 }
 
 .player {
