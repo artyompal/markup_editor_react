@@ -10,8 +10,10 @@ import { tmpNameSync } from 'tmp';
 
 import 'react-h5-audio-player/lib/styles.css'
 
+import Spectrogram from 'components/spectrogram';
 
-export class MainWindow extends React.Component {
+
+export default class MainWindow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {mp3_file: undefined, spectrum_file: undefined};
@@ -35,14 +37,12 @@ export class MainWindow extends React.Component {
       return null;
     }
 
+    const scale = 1, offset = 0;
+    const transform = `scale(${scale},1) translate(${-offset},0)`;
+
     return (
       <div className="Application">
-        <div className="svg-holder">
-          <svg className="svg-block">
-            <image href={this.state.spectrum_file}  preserveAspectRatio="none" width="100%"
-                   height="100%" />
-          </svg>
-        </div>
+        <Spectrogram spectrum_file={this.state.spectrum_file} />
         <AudioPlayer className="player" src={this.state.mp3_file}/>
       </div>
     );
