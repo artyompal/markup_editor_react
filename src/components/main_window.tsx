@@ -44,9 +44,6 @@ export default class MainWindow extends React.Component {
       return null;
     }
 
-    const scale = 1, offset = 0;
-    const transform = `scale(${scale},1) translate(${-offset},0)`;
-
     return (
       <div>
         <Spectrogram spectrum_file={this.state.spectrum_file}
