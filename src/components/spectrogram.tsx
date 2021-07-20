@@ -35,10 +35,28 @@ export default class Spectrogram extends React.Component {
           <svg className="svg-block" width={w} >
             <image href={this.props.spectrum_file} preserveAspectRatio="none"
               x={0} y={0} width={w} height={h} />
+            { this.render_marks() }
             <line className="cursor" y1={0} y2={10000} x1={pos} x2={pos} />
           </svg>
         </div>
       </div>
     );
+  }
+
+  render_marks() {
+    if (!this.props.marks) {
+      return null;
+    }
+
+    return this.props.marks.map((coord, idx) => {
+      if (coord < 0 || coord >= this.props.duration) {
+        return null;
+      }
+
+      const x = coord * this.props.width * this.state.scale  / this.props.duration;
+      return (
+        <line className="mark" key={idx} x1={x} x2={x} y1={0} y2={10000} />
+      );
+    });
   }
 }

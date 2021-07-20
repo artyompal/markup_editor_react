@@ -192,7 +192,7 @@ export default class MenuBuilder {
         label: '&File',
         submenu: [
           {
-            label: '&Open',
+            label: '&Open music',
             accelerator: 'Ctrl+O',
             click: (item: Electron.MenuItem, focusedWindow: Electron.BrowserWindow) => {
               const filters = [
@@ -205,8 +205,25 @@ export default class MenuBuilder {
               const filenames = dialog.showOpenDialogSync(focusedWindow, options)
 
               if (filenames) {
-                // console.log('showOpenDialogSync returned:', filenames);
                 focusedWindow.webContents.send("open_audio", filenames[0]);
+              }
+            }
+          },
+          {
+            label: 'Open marku&p',
+            accelerator: 'Ctrl+P',
+            click: (item: Electron.MenuItem, focusedWindow: Electron.BrowserWindow) => {
+              const filters = [
+                { "name": "Json files", "extensions": ["json"] },
+                { "name": "All", "extensions": ["*"] },
+              ];
+
+              const options = {title: 'Select markup file', properties: ['openFile'],
+                               filters: filters };
+              const filenames = dialog.showOpenDialogSync(focusedWindow, options)
+
+              if (filenames) {
+                focusedWindow.webContents.send("open_markup", filenames[0]);
               }
             }
           },
