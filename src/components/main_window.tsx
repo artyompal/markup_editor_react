@@ -45,7 +45,6 @@ export default class MainWindow extends React.Component {
   open_markup(markup_file: string) {
     console.log('opening markup', markup_file);
     const content = JSON.parse(fs.readFileSync(markup_file));
-    console.log(content['measure_times']);
     this.setState({...this.state, marks: content['measure_times']});
   }
 
