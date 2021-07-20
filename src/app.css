@@ -41,6 +41,14 @@ image {
   bottom: 0;
 }
 
+.cursor {
+    fill: none;
+    stroke: green;
+    stroke-width: 2;
+    shape-rendering: auto;
+}
+
+
 /* body {
   position: relative;
   // color: white;
