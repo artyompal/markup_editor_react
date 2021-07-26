@@ -9,7 +9,6 @@ export default class FileTable extends React.Component {
     super(props);
 
     const songs = JSON.parse(fs.readFileSync(CACHE_PATH + 'mp3_to_tab2'));
-    console.log(songs[2])
     this.state = {songs: songs};
   }
 

@@ -191,7 +191,7 @@ export default class MenuBuilder {
       {
         label: '&File',
         submenu: [
-          {
+          /* {
             label: '&Open music',
             accelerator: 'Ctrl+O',
             click: (item: Electron.MenuItem, focusedWindow: Electron.BrowserWindow) => {
@@ -226,7 +226,7 @@ export default class MenuBuilder {
                 focusedWindow.webContents.send("open_markup", filenames[0]);
               }
             }
-          },
+          }, */
           {
             label: '&Close',
             accelerator: 'Ctrl+W',

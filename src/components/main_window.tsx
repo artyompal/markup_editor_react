@@ -4,8 +4,9 @@ import path from 'path';
 
 import React from 'react';
 import AudioPlayer from 'react-h5-audio-player';
+import { Helmet } from 'react-helmet'
 
-import { ipcRenderer } from 'electron';
+// import { ipcRenderer } from 'electron';
 import { spawnSync } from 'child_process';
 import { tmpNameSync } from 'tmp';
 import image_size from 'image-size';
@@ -22,9 +23,10 @@ export default class MainWindow extends React.Component {
     this.state = {mp3_file: undefined, spectrum_file: undefined, marks: undefined,
       duration: undefined, time: 0,
       spectrum_width: 0, spectrum_height: 0};
+
     this.player = React.createRef();
-    ipcRenderer.on('open_audio', (event, message) => this.open_audio(message));
-    ipcRenderer.on('open_markup', (event, message) => this.open_markup(message));
+    // ipcRenderer.on('open_audio', (event, message) => this.open_audio(message));
+    // ipcRenderer.on('open_markup', (event, message) => this.open_markup(message));
   }
 
   open_audio(mp3_file: string) {
@@ -54,24 +56,40 @@ export default class MainWindow extends React.Component {
     }
   }
 
+  render_title(hint) {
+    let title = 'Music Markup Editor' + hint;
+    console.log('now title is', title);
+    return (
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
+    );
+  }
+
   render() {
     if (!this.state.mp3_file) {
-      return (<FileTable main_window={this}/>);
+      return (
+        <div>
+          {this.render_title(' | Select song to continue')}
+          <FileTable main_window={this}/>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          {this.render_title(' | Author - Song')}
+          <Spectrogram
+            spectrum_file={this.state.spectrum_file} marks={this.state.marks}
+            duration={this.state.duration} time={this.state.time}
+            width={this.state.spectrum_width} height={this.state.spectrum_height} />
+          <AudioPlayer
+            className="player" autoPlayAfterSrcChange={false}
+            src={this.state.mp3_file} ref={this.player}
+            onLoadedData={() => this.on_playing()} onListen={() => this.on_playing()}
+            listenInterval={16}
+            />
+        </div>
+      );
     }
-
-    return (
-      <div>
-        <Spectrogram
-          spectrum_file={this.state.spectrum_file} marks={this.state.marks}
-          duration={this.state.duration} time={this.state.time}
-          width={this.state.spectrum_width} height={this.state.spectrum_height} />
-        <AudioPlayer
-          className="player" autoPlayAfterSrcChange={false}
-          src={this.state.mp3_file} ref={this.player}
-          onLoadedData={() => this.on_playing()} onListen={() => this.on_playing()}
-          listenInterval={16}
-          />
-      </div>
-    );
   }
 }
