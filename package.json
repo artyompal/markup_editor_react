@@ -189,7 +189,6 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.0.8",
     "file-loader": "^6.0.0",
-    "husky": "^4.2.5",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.1.0",
     "lint-staged": "^10.2.11",
@@ -225,8 +224,7 @@
     "react-helmet": "^6.1.0",
     "react-router-dom": "^5.2.0",
     "regenerator-runtime": "^0.13.5",
-    "source-map-support": "^0.5.19",
-    "tmp": "^0.2.1"
+    "source-map-support": "^0.5.19"
   },
   "devEngines": {
     "node": ">=10.x",

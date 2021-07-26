@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import React from 'react';
 
 import {CACHE_PATH} from 'settings/constants';
@@ -8,13 +9,17 @@ export default class FileTable extends React.Component {
   constructor(props) {
     super(props);
 
-    const songs = JSON.parse(fs.readFileSync(CACHE_PATH + 'mp3_to_tab2'));
+    const songs = JSON.parse(fs.readFileSync(path.join(CACHE_PATH, 'scores_database.json')));
     this.state = {songs: songs};
   }
 
   on_double_click(idx, e) {
     e.preventDefault();
-    this.props.main_window.open_audio(this.state.songs[idx]['mp3']);
+    this.props.main_window.open_song(
+      this.state.songs[idx]['tags'][0],
+      this.state.songs[idx]['tags'][1],
+      this.state.songs[idx]['mp3'],
+      this.state.songs[idx]['tab']);
   }
 
   render() {
