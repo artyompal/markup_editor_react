@@ -1,0 +1,44 @@
+import fs from 'fs';
+import React from 'react';
+
+import {CACHE_PATH} from 'settings/constants';
+
+
+export default class FileTable extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const songs = JSON.parse(fs.readFileSync(CACHE_PATH + 'mp3_to_tab2'));
+    console.log(songs[2])
+    this.state = {songs: songs};
+  }
+
+  render() {
+    return (
+      <div className="file-table-outer">
+        <div className="file-table-inner">
+          <table>
+            <thead>
+              <tr>
+                <td>Author</td>
+                <td>Song</td>
+                <td>MP3</td>
+                <td>Score</td>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.songs.map((item, index) => (
+                <tr key={index}>
+                  <td>{item['tags'][0]}</td>
+                  <td>{item['tags'][1]}</td>
+                  <td>{item['mp3']}</td>
+                  <td>{item['tab']}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+}

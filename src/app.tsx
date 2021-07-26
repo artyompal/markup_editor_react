@@ -5,19 +5,12 @@ import './app.css';
 
 import MainWindow from 'components/main_window';
 
-const Application = () => {
-  return (
-    <div className="Application">
-      <MainWindow/>
-    </div>
-  );
-};
 
 export default function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/" component={Application} />
+        <Route path="/" component={MainWindow} />
       </Switch>
     </Router>
   );

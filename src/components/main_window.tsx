@@ -13,6 +13,7 @@ import image_size from 'image-size';
 import 'react-h5-audio-player/lib/styles.css'
 
 import Spectrogram from 'components/spectrogram';
+import FileTable from 'components/file_table';
 
 
 export default class MainWindow extends React.Component {
@@ -35,8 +36,6 @@ export default class MainWindow extends React.Component {
       {cwd: '../ml_auto_scores/'});
 
     const spectrum_sz = image_size(spectrum_file);
-    console.log('spectrum_sz', spectrum_sz);
-
     this.setState({...this.state,
       mp3_file: 'file://' + mp3_file, spectrum_file: 'file://' + spectrum_file,
       spectrum_width: spectrum_sz.width, spectrum_height: spectrum_sz.height});
@@ -57,7 +56,7 @@ export default class MainWindow extends React.Component {
 
   render() {
     if (!this.state.mp3_file) {
-      return null;
+      return (<FileTable/>);
     }
 
     return (
