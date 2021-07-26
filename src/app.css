@@ -67,7 +67,6 @@ image {
 }
 
 .file-table-inner {
-  /* position: absolute; */
   padding: 8px;
 }
 
@@ -87,6 +86,10 @@ tfoot {
 
 tbody {
     background-color: #e4f0f5;
+}
+
+tr:hover {
+    background-color: #3f87a6;
 }
 
 td,
