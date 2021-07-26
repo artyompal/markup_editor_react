@@ -96,9 +96,12 @@ export default class MainWindow extends React.Component {
     });
   }
 
-  open_song(artist: string, title: string, mp3_path: string, tab_path: string) {
-    this.generate_beats(mp3_path);
+  open_song(artist: string, song_name: string, mp3_path: string, tab_path: string) {
     this.generate_spectrogram(mp3_path);
+    this.generate_beats(mp3_path);
+
+    const capitalize = (s) => s.substring(0, 1).toUpperCase() + s.substr(1);
+    this.setState({artist: capitalize(artist), song_name: capitalize(song_name)});
   }
 
   on_playing() {
@@ -129,7 +132,7 @@ export default class MainWindow extends React.Component {
     } else {
       return (
         <div>
-          {this.render_title(' | Author - Song')}
+          {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
           <Spectrogram
             spectrum_file={this.state.spectrum_file} marks={this.state.marks}
             duration={this.state.duration} time={this.state.time}
