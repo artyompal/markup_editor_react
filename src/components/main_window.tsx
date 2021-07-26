@@ -41,9 +41,8 @@ export default class MainWindow extends React.Component {
     let load_spectrogram = () => {
       console.log('loading spectrogram', spectrum_path);
       const spectrum_sz = image_size(spectrum_path);
-      this.setState({...this.state,
-        mp3_file: 'file://' + mp3_path, spectrum_file: 'file://' + spectrum_path,
-        spectrum_width: spectrum_sz.width, spectrum_height: spectrum_sz.height});
+      this.setState({mp3_file: 'file://' + mp3_path, spectrum_file: 'file://' + spectrum_path,
+                     spectrum_width: spectrum_sz.width, spectrum_height: spectrum_sz.height});
     }
 
     const spectrum_path = this.get_cache_path(mp3_path, '.cqt.png');
@@ -59,7 +58,6 @@ export default class MainWindow extends React.Component {
 
     child.on('exit', (code) => {
       if (code == 0) {
-        console.log('spectrogram loaded');
         load_spectrogram();
       } else {
         console.error('spectrogram generator returned an error', code);
@@ -73,7 +71,7 @@ export default class MainWindow extends React.Component {
     if (fs.existsSync(beats_path)) {
       console.log('loading beats', beats_path);
       const beats = JSON.parse(fs.readFileSync(beats_path));
-      this.setState({...this.state, marks: beats});
+      this.setState({marks: beats});
       return;
     }
 
