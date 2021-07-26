@@ -13,6 +13,11 @@ export default class FileTable extends React.Component {
     this.state = {songs: songs};
   }
 
+  on_double_click(idx, e) {
+    e.preventDefault();
+    this.props.main_window.open_audio(this.state.songs[idx]['mp3']);
+  }
+
   render() {
     return (
       <div className="file-table-outer">
@@ -27,8 +32,8 @@ export default class FileTable extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.songs.map((item, index) => (
-                <tr key={index}>
+              {this.state.songs.map((item, idx) => (
+                <tr key={idx} onDoubleClick={(e) => this.on_double_click(idx, e)}>
                   <td>{item['tags'][0]}</td>
                   <td>{item['tags'][1]}</td>
                   <td>{item['mp3']}</td>

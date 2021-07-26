@@ -56,7 +56,7 @@ export default class MainWindow extends React.Component {
 
   render() {
     if (!this.state.mp3_file) {
-      return (<FileTable/>);
+      return (<FileTable main_window={this}/>);
     }
 
     return (
