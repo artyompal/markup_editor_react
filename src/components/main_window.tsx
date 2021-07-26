@@ -20,32 +20,12 @@ import {CACHE_PATH, MP3_BASE_PATH} from 'settings/constants';
 export default class MainWindow extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {mp3_file: undefined, spectrum_file: undefined, marks: undefined,
+    this.state = {mp3_file: undefined, spectrum_file: undefined, marks: [],
       duration: undefined, time: 0,
       spectrum_width: 0, spectrum_height: 0};
 
     this.player = React.createRef();
   }
-
-  /* open_audio(mp3_file: string) {
-    console.log('opening audio', mp3_file);
-
-    const spectrum_file = tmpNameSync({postfix: '.png'});
-    console.log('writing spectrogram to', spectrum_file);
-    spawnSync('python', ['gen_spectrogram.py', spectrum_file, mp3_file],
-      {cwd: '../ml_auto_scores/'});
-
-    const spectrum_sz = image_size(spectrum_file);
-    this.setState({...this.state,
-      mp3_file: 'file://' + mp3_file, spectrum_file: 'file://' + spectrum_file,
-      spectrum_width: spectrum_sz.width, spectrum_height: spectrum_sz.height});
-  }
-
-  open_markup(markup_file: string) {
-    console.log('opening markup', markup_file);
-    const content = JSON.parse(fs.readFileSync(markup_file));
-    this.setState({...this.state, marks: content['measure_times']});
-  }*/
 
   get_cache_path(file_path: string, suffix: string) {
     file_path = fs.realpathSync(file_path);
@@ -57,8 +37,41 @@ export default class MainWindow extends React.Component {
     return path.join(CACHE_PATH, file_path + suffix);
   }
 
-  generate_beats(beats_path: string, mp3_path: string) {
+  generate_spectrogram(mp3_path: string) {
+    let load_spectrogram = () => {
+      console.log('loading spectrogram', spectrum_path);
+      const spectrum_sz = image_size(spectrum_path);
+      this.setState({...this.state,
+        mp3_file: 'file://' + mp3_path, spectrum_file: 'file://' + spectrum_path,
+        spectrum_width: spectrum_sz.width, spectrum_height: spectrum_sz.height});
+    }
+
+    const spectrum_path = this.get_cache_path(mp3_path, '.cqt.png');
+
+    if (fs.existsSync(spectrum_path)) {
+      load_spectrogram();
+      return;
+    }
+
+    console.log('generating spectrogram for', mp3_path);
+    let child = child_process.spawn('python', ['gen_spectrogram.py', spectrum_path, mp3_path],
+      {cwd: '../ml_auto_scores/'});
+
+    child.on('exit', (code) => {
+      if (code == 0) {
+        console.log('spectrogram loaded');
+        load_spectrogram();
+      } else {
+        console.error('spectrogram generator returned an error', code);
+      }
+    });
+  }
+
+  generate_beats(mp3_path: string) {
+    const beats_path = this.get_cache_path(mp3_path, '.beats.json');
+
     if (fs.existsSync(beats_path)) {
+      console.log('loading beats', beats_path);
       const beats = JSON.parse(fs.readFileSync(beats_path));
       this.setState({...this.state, marks: beats});
       return;
@@ -70,7 +83,6 @@ export default class MainWindow extends React.Component {
     child.on('exit', (code) => {
       if (code == 0) {
         child.stdout.read().toString().split('\n').forEach((line) => {
-          console.log(line);
           if (line.startsWith('ticks: ')) {
             const beats = JSON.parse(line.substr(7));
 
@@ -80,13 +92,15 @@ export default class MainWindow extends React.Component {
             this.setState({...this.state, marks: beats});
           }
         });
+      } else {
+        console.error('beat detector returned an error', code);
       }
     });
   }
 
   open_song(artist: string, title: string, mp3_path: string, tab_path: string) {
-    const beats_path = this.get_cache_path(mp3_path, '.beats');
-    this.generate_beats(beats_path, mp3_path);
+    this.generate_beats(mp3_path);
+    this.generate_spectrogram(mp3_path);
   }
 
   on_playing() {
