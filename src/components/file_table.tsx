@@ -23,14 +23,7 @@ export default class FileTable extends React.Component {
       <div className="file-table-outer">
         <div className="file-table-inner">
           <table>
-            <thead>
-              <tr>
-                <td>Author</td>
-                <td>Song</td>
-                <td>MP3</td>
-                <td>Score</td>
-              </tr>
-            </thead>
+            <thead><tr><td>Author</td><td>Song</td><td>MP3</td><td>Score</td></tr></thead>
             <tbody>
               {this.state.songs.map((item, idx) => (
                 <tr key={idx} onDoubleClick={(e) => this.on_double_click(idx, e)}>
