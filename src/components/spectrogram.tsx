@@ -9,6 +9,7 @@ export default class Spectrogram extends React.Component {
   constructor(props) {
     super(props);
     this.state = {scale: 1};
+    this.scroll_holder = React.createRef();
   }
 
   on_wheel(e) {
@@ -18,6 +19,16 @@ export default class Spectrogram extends React.Component {
     if (new_scale != this.state.scale) {
       this.setState({scale: new_scale});
     }
+  }
+
+  on_double_click(e) {
+    e.preventDefault();
+
+    const rect = this.scroll_holder.current.getBoundingClientRect();
+    const time = (this.scroll_holder.current.scrollLeft + e.clientX - rect.left) /
+                 (this.props.width * this.state.scale) * this.props.duration;
+
+    this.props.main_window.seek(time);
   }
 
   render() {
@@ -31,8 +42,8 @@ export default class Spectrogram extends React.Component {
 
     return (
       <div className="svg-outer-holder" onWheel={(e) => this.on_wheel(e)}>
-        <div className="svg-holder">
-          <svg className="svg-block" width={w} >
+        <div className="svg-holder" ref={this.scroll_holder}>
+          <svg className="svg-block" width={w} onDoubleClick={(e) => this.on_double_click(e)}>
             <image href={this.props.spectrum_file} preserveAspectRatio="none"
               x={0} y={0} width={w} height={h} />
             { this.render_marks() }

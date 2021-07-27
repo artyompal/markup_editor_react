@@ -112,6 +112,12 @@ export default class MainWindow extends React.Component {
     }
   }
 
+  seek(time: float) {
+    if (time >= 0 && time < this.state.duration) {
+      this.player.current.audio.current.currentTime = time;
+    }
+  }
+
   render_title(hint) {
     let title = 'Music Markup Editor' + hint;
     return (
@@ -135,7 +141,7 @@ export default class MainWindow extends React.Component {
           {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
           <Spectrogram
             spectrum_file={this.state.spectrum_file} marks={this.state.marks}
-            duration={this.state.duration} time={this.state.time}
+            duration={this.state.duration} time={this.state.time} main_window={this}
             width={this.state.spectrum_width} height={this.state.spectrum_height} />
           <AudioPlayer
             className="player" autoPlayAfterSrcChange={false}
