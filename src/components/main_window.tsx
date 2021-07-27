@@ -10,6 +10,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+import Modal from 'react-bootstrap/Modal'
+
 import child_process from 'child_process';
 import image_size from 'image-size';
 
@@ -29,6 +31,7 @@ export default class MainWindow extends React.Component {
       spectrum_width: 0, spectrum_height: 0};
 
     this.player = React.createRef();
+    this.num_processes = 0;
   }
 
   get_cache_path(file_path: string, suffix: string) {
@@ -59,8 +62,11 @@ export default class MainWindow extends React.Component {
     console.log('generating spectrogram for', mp3_path);
     let child = child_process.spawn('python', ['gen_spectrogram.py', spectrum_path, mp3_path],
       {cwd: '../ml_auto_scores/'});
+    this.num_processes++;
 
     child.on('exit', (code) => {
+      this.num_processes--;
+
       if (code == 0) {
         load_spectrogram();
       } else {
@@ -81,8 +87,11 @@ export default class MainWindow extends React.Component {
 
     console.log('launching beat detector for', mp3_path);
     let child = child_process.spawn('tools/streaming_rhythmextractor_multifeature', [mp3_path]);
+    this.num_processes++;
 
     child.on('exit', (code) => {
+      this.num_processes--;
+
       if (code == 0) {
         child.stdout.read().toString().split('\n').forEach((line) => {
           if (line.startsWith('ticks: ')) {
@@ -146,12 +155,30 @@ export default class MainWindow extends React.Component {
     );
   }
 
+  render_modal() {
+    if (this.num_processes) {
+      return (
+        <Modal show={true} backdrop="static" keyboard={false} centered>
+          <Modal.Header >
+            <Modal.Title>Sound data processing</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Sound data is being processed. Please wait...</Modal.Body>
+          <Modal.Footer>
+          </Modal.Footer>
+        </Modal>
+      );
+    } else {
+      return null;
+    }
+  }
+
   render() {
-    if (!this.state.mp3_file) {
+    if (!this.state.mp3_file || !this.state.marks) {
       return (
         <div>
           {this.render_title(' | Select song to continue')}
           <FileTable main_window={this}/>
+          {this.render_modal()}
         </div>
       );
     } else {
