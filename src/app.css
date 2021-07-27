@@ -16,7 +16,7 @@ body {
 }
 .svg-holder {
   position: relative;
-  height: 88vh; /* FIXME: hardcoded size of the player */
+  height: 84vh; /* FIXME: hardcoded size of the player */
   overflow-x: scroll;
   overflow-y: hidden;
 }
