@@ -6,6 +6,10 @@ import React from 'react';
 import AudioPlayer from 'react-h5-audio-player';
 import { Helmet } from 'react-helmet'
 
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
 import child_process from 'child_process';
 import image_size from 'image-size';
 
@@ -104,6 +108,10 @@ export default class MainWindow extends React.Component {
     this.setState({artist: capitalize(artist), song_name: capitalize(song_name)});
   }
 
+  close_song() {
+    this.setState({mp3_file: undefined, spectrum_file: undefined, marks: []});
+  }
+
   on_playing() {
     if (this.player && this.player.current && this.player.current.audio) {
       this.setState({...this.state,
@@ -127,6 +135,17 @@ export default class MainWindow extends React.Component {
     );
   }
 
+  render_toolbar() {
+    return (
+      <Toolbar>
+        <IconButton aria-label="Close file" className="large_icon" disableRipple={true}
+          onClick={() => this.close_song()}>
+          <CloseIcon />
+        </IconButton>
+      </Toolbar>
+    );
+  }
+
   render() {
     if (!this.state.mp3_file) {
       return (
@@ -139,6 +158,7 @@ export default class MainWindow extends React.Component {
       return (
         <div>
           {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
+          {this.render_toolbar()}
           <Spectrogram
             spectrum_file={this.state.spectrum_file} marks={this.state.marks}
             duration={this.state.duration} time={this.state.time} main_window={this}

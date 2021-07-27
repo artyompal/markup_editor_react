@@ -57,10 +57,6 @@ image {
 
 
 .file-table-outer {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  padding: 0;
   overflow-y: scroll;
   top: 0;
   left: 0;
@@ -96,4 +92,19 @@ td,
 th {
     border: 1px solid rgb(190, 190, 190);
     padding: 5px 10px;
+}
+
+
+.MuiSvgIcon-root {
+  color: #ffffff;
+  background-color: #1976d2;
+}
+
+.MuiButtonBase-root .MuiIconButton-root {
+  width: 60;
+  height: 60;
+}
+
+.large_icon {
+   transform: scale(1.8);
 }
