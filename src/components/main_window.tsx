@@ -121,7 +121,7 @@ export default class MainWindow extends React.Component {
     });
   }
 
-  open_song(artist: string, song_name: string, mp3_path: string, tab_path: string) {
+  open_file(artist: string, song_name: string, mp3_path: string, tab_path: string) {
     this.generate_spectrogram(mp3_path);
     this.generate_beats(mp3_path);
 
@@ -129,7 +129,7 @@ export default class MainWindow extends React.Component {
     this.setState({artist: capitalize(artist), song_name: capitalize(song_name)});
   }
 
-  close_song() {
+  close_file() {
     this.setState({mp3_file: undefined, spectrum_file: undefined, marks: []});
   }
 
@@ -167,7 +167,7 @@ export default class MainWindow extends React.Component {
           </Tooltip>
           <Tooltip title="Close file">
             <IconButton aria-label="Close file" className="large_icon" disableRipple={true}
-              onClick={() => this.close_song()}>
+              onClick={() => this.close_file()}>
               <CloseIcon />
             </IconButton>
           </Tooltip>
