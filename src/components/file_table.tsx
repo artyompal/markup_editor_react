@@ -15,6 +15,13 @@ export default class FileTable extends React.Component {
 
   on_double_click(idx, e) {
     e.preventDefault();
+
+    // Prevent Chrome drag selection bug
+    const windowSelection: Selection | null = window.getSelection()
+    if (windowSelection && windowSelection.type === 'Range') {
+      windowSelection.empty()
+    }
+
     this.props.main_window.open_file(
       this.state.songs[idx].tags[0],
       this.state.songs[idx].tags[1],
