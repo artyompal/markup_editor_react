@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import React from 'react';
 
-import {CACHE_PATH} from 'settings/constants';
+import {CACHE_PATH} from 'logic/settings';
 
 
 export default class FileTable extends React.Component {

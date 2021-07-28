@@ -14,6 +14,7 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import CloseIcon from '@material-ui/icons/Close';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
@@ -27,7 +28,7 @@ import 'react-h5-audio-player/lib/styles.css'
 import Spectrogram from 'components/spectrogram';
 import FileTable from 'components/file_table';
 
-import {CACHE_PATH, MP3_BASE_PATH} from 'settings/constants';
+import {CACHE_PATH, MP3_BASE_PATH} from 'logic/settings';
 
 
 export default class MainWindow extends React.Component {
@@ -180,6 +181,11 @@ export default class MainWindow extends React.Component {
           </Tooltip>
         </div>
         <div className="toolbar">
+          <Tooltip title="Filter lines">
+            <IconButton aria-label="Filter" className="large_icon" disableRipple={true}>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Add bar">
             <IconButton aria-label="Add bar" className="large_icon" disableRipple={true}>
               <AddIcon />
