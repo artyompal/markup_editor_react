@@ -8,7 +8,14 @@ import { Helmet } from 'react-helmet'
 
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+
+import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import CloseIcon from '@material-ui/icons/Close';
+import UndoIcon from '@material-ui/icons/Undo';
+import RedoIcon from '@material-ui/icons/Redo';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 import Modal from 'react-bootstrap/Modal'
 
@@ -146,12 +153,45 @@ export default class MainWindow extends React.Component {
 
   render_toolbar() {
     return (
-      <Toolbar>
-        <IconButton aria-label="Close file" className="large_icon" disableRipple={true}
-          onClick={() => this.close_song()}>
-          <CloseIcon />
-        </IconButton>
-      </Toolbar>
+      <>
+        <div className="toolbar">
+          <Tooltip title="Create tab">
+            <IconButton aria-label="Create tab" className="large_icon" disableRipple={true}>
+              <NoteAddIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Close tab">
+            <IconButton aria-label="Close tab" className="large_icon" disableRipple={true}
+              onClick={() => this.close_song()}>
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+        <div className="toolbar">
+          <Tooltip title="Undo">
+            <IconButton aria-label="Undo" className="large_icon" disableRipple={true}>
+              <UndoIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Redo">
+            <IconButton aria-label="Redo" className="large_icon" disableRipple={true}>
+              <RedoIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+        <div className="toolbar">
+          <Tooltip title="Add bar">
+            <IconButton aria-label="Add bar" className="large_icon" disableRipple={true}>
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Remove bar">
+            <IconButton aria-label="Remove bar" className="large_icon" disableRipple={true}>
+              <RemoveIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </>
     );
   }
 

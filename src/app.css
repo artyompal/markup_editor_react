@@ -100,11 +100,13 @@ th {
   background-color: #1976d2;
 }
 
-.MuiButtonBase-root .MuiIconButton-root {
-  width: 60;
-  height: 60;
+.large_icon {
+  transform: scale(1.8);
 }
 
-.large_icon {
-   transform: scale(1.8);
+.toolbar {
+  margin: 0;
+  padding: 5px;
+  padding-right: 15px;
+  display: inline-block;
 }
