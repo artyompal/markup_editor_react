@@ -19,6 +19,10 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
 import Modal from 'react-bootstrap/Modal'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 import child_process from 'child_process';
 import image_size from 'image-size';
@@ -35,7 +39,7 @@ export default class MainWindow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {mp3_file: undefined, spectrum_file: undefined, marks: [],
-      duration: undefined, time: 0,
+      duration: undefined, time: 0, show_filter_bars_dlg: false,
       spectrum_width: 0, spectrum_height: 0};
 
     this.player = React.createRef();
@@ -156,13 +160,13 @@ export default class MainWindow extends React.Component {
     return (
       <>
         <div className="toolbar">
-          <Tooltip title="Create tab">
-            <IconButton aria-label="Create tab" className="large_icon" disableRipple={true}>
+          <Tooltip title="Create file">
+            <IconButton aria-label="Create file" className="large_icon" disableRipple={true}>
               <NoteAddIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Close tab">
-            <IconButton aria-label="Close tab" className="large_icon" disableRipple={true}
+          <Tooltip title="Close file">
+            <IconButton aria-label="Close file" className="large_icon" disableRipple={true}
               onClick={() => this.close_song()}>
               <CloseIcon />
             </IconButton>
@@ -181,8 +185,9 @@ export default class MainWindow extends React.Component {
           </Tooltip>
         </div>
         <div className="toolbar">
-          <Tooltip title="Filter lines">
-            <IconButton aria-label="Filter" className="large_icon" disableRipple={true}>
+          <Tooltip title="Filter bars">
+            <IconButton aria-label="Filter" className="large_icon" disableRipple={true}
+              onClick={() => {this.setState({show_filter_bars_dlg: true})}}>
               <FilterListIcon />
             </IconButton>
           </Tooltip>
@@ -201,21 +206,48 @@ export default class MainWindow extends React.Component {
     );
   }
 
-  render_modal() {
-    if (this.num_processes) {
-      return (
-        <Modal show={true} backdrop="static" keyboard={false} centered>
-          <Modal.Header >
-            <Modal.Title>Sound data processing</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Sound data is being processed. Please wait...</Modal.Body>
-          <Modal.Footer>
-          </Modal.Footer>
-        </Modal>
-      );
-    } else {
-      return null;
-    }
+  render_filter_bars_dialog() {
+    return (
+      <Modal show={true} backdrop="static" keyboard={false} centered>
+        <Modal.Header >
+          <Modal.Title>Filter Bars - please enter parameters:</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Row className="mb-3">
+              <Form.Group  as={Col}>
+                <Form.Label>Start offset</Form.Label>
+                <Form.Control type="number" placeholder="Enter a number" />
+              </Form.Group>
+
+              <Form.Group  as={Col}>
+                <Form.Label>Frequency</Form.Label>
+                <Form.Control type="number" placeholder="Enter a number" />
+              </Form.Group>
+            </Row>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+            <Button variant="primary">OK</Button>
+            <Button variant="secondary"
+              onClick={() => {this.setState({show_filter_bars_dlg: false})}}
+              >Cancel</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
+  render_progress_window() {
+    return (
+      <Modal show={true} backdrop="static" keyboard={false} centered>
+        <Modal.Header >
+          <Modal.Title>Sound data processing</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Sound data is being processed. Please wait...</Modal.Body>
+        <Modal.Footer>
+        </Modal.Footer>
+      </Modal>
+    );
   }
 
   render() {
@@ -224,7 +256,7 @@ export default class MainWindow extends React.Component {
         <div>
           {this.render_title(' | Select song to continue')}
           <FileTable main_window={this}/>
-          {this.render_modal()}
+          {this.num_processes !== 0 ? this.render_progress_window() : null}
         </div>
       );
     } else {
@@ -232,6 +264,7 @@ export default class MainWindow extends React.Component {
         <div>
           {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
           {this.render_toolbar()}
+          {this.state.show_filter_bars_dlg ? this.render_filter_bars_dialog() : null}
           <Spectrogram
             spectrum_file={this.state.spectrum_file} marks={this.state.marks}
             duration={this.state.duration} time={this.state.time} main_window={this}
