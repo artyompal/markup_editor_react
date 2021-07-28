@@ -6,7 +6,6 @@ import React from 'react';
 import AudioPlayer from 'react-h5-audio-player';
 import { Helmet } from 'react-helmet'
 
-import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -161,12 +160,12 @@ export default class MainWindow extends React.Component {
       <>
         <div className="toolbar">
           <Tooltip title="Create file">
-            <IconButton aria-label="Create file" className="large_icon" disableRipple={true}>
-              <NoteAddIcon />
+            <IconButton aria-label="Create file" disableRipple={true}>
+            <NoteAddIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Close file">
-            <IconButton aria-label="Close file" className="large_icon" disableRipple={true}
+            <IconButton aria-label="Close file" disableRipple={true}
               onClick={() => this.close_file()}>
               <CloseIcon />
             </IconButton>
@@ -174,30 +173,30 @@ export default class MainWindow extends React.Component {
         </div>
         <div className="toolbar">
           <Tooltip title="Undo">
-            <IconButton aria-label="Undo" className="large_icon" disableRipple={true}>
+            <IconButton aria-label="Undo" disableRipple={true}>
               <UndoIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Redo">
-            <IconButton aria-label="Redo" className="large_icon" disableRipple={true}>
+            <IconButton aria-label="Redo" disableRipple={true}>
               <RedoIcon />
             </IconButton>
           </Tooltip>
         </div>
         <div className="toolbar">
           <Tooltip title="Filter bars">
-            <IconButton aria-label="Filter" className="large_icon" disableRipple={true}
+            <IconButton aria-label="Filter" disableRipple={true}
               onClick={() => {this.setState({show_filter_bars_dlg: true})}}>
               <FilterListIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Add bar">
-            <IconButton aria-label="Add bar" className="large_icon" disableRipple={true}>
+            <IconButton aria-label="Add bar" disableRipple={true}>
               <AddIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Remove bar">
-            <IconButton aria-label="Remove bar" className="large_icon" disableRipple={true}>
+            <IconButton aria-label="Remove bar" disableRipple={true}>
               <RemoveIcon />
             </IconButton>
           </Tooltip>
@@ -264,7 +263,6 @@ export default class MainWindow extends React.Component {
         <div>
           {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
           {this.render_toolbar()}
-          {this.state.show_filter_bars_dlg ? this.render_filter_bars_dialog() : null}
           <Spectrogram
             spectrum_file={this.state.spectrum_file} marks={this.state.marks}
             duration={this.state.duration} time={this.state.time} main_window={this}
@@ -275,6 +273,7 @@ export default class MainWindow extends React.Component {
             onLoadedData={() => this.on_playing()} onListen={() => this.on_playing()}
             listenInterval={16}
             />
+          {this.state.show_filter_bars_dlg ? this.render_filter_bars_dialog() : null}
         </div>
       );
     }
