@@ -1,9 +1,16 @@
 module.exports = {
-  extends: 'erb',
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+  ],
+
   rules: {
-    // A temporary hack related to IDE not resolving correct package.json
-    'import/no-extraneous-dependencies': 'off',
+    // // A temporary hack related to IDE not resolving correct package.json
+    // 'import/no-extraneous-dependencies': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
   },
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',

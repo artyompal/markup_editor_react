@@ -12,12 +12,12 @@ interface SpectrogramProps {
   time: number;
   main_window: any;
   width: number;
-   height: number;
-};
+  height: number;
+}
 
 interface SpectrogramState {
   scale: number;
-};
+}
 
 export default class Spectrogram extends React.Component<SpectrogramProps, SpectrogramState> {
   scroll_holder: any;

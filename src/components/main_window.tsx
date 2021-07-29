@@ -35,7 +35,7 @@ import {CACHE_PATH, MP3_BASE_PATH} from '../logic/settings';
 
 
 interface MainWindowProps {
-};
+}
 
 interface MainWindowState {
   mp3_file: string;
@@ -48,7 +48,7 @@ interface MainWindowState {
   spectrum_height: number;
   artist: string;
   song_name: string;
-};
+}
 
 export default class MainWindow extends React.Component<MainWindowProps, MainWindowState> {
   player: any;
@@ -75,7 +75,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   }
 
   generate_spectrogram(mp3_path: string) {
-    let load_spectrogram = () => {
+    const load_spectrogram = () => {
       console.log('loading spectrogram', spectrum_path);
       const spectrum_sz = image_size(spectrum_path);
       this.setState({mp3_file: 'file://' + mp3_path,
@@ -92,11 +92,11 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     }
 
     console.log('generating spectrogram for', mp3_path);
-    let child = child_process.spawn('python', ['gen_spectrogram.py', spectrum_path, mp3_path],
+    const child = child_process.spawn('python', ['gen_spectrogram.py', spectrum_path, mp3_path],
       {cwd: '../ml_auto_scores/'});
     this.num_processes++;
 
-    child.on('exit', (code) => {
+    child.on('exit', (code: number) => {
       this.num_processes--;
 
       if (code == 0) {

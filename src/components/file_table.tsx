@@ -7,17 +7,17 @@ import {CACHE_PATH} from '../logic/settings';
 
 interface FileTableProps {
   main_window: any;
-};
+}
 
 interface SongInfo {
   tags: string[];
   mp3: string;
   tab: string;
-};
+}
 
 interface FileTableState {
   songs: SongInfo[];
-};
+}
 
 export default class FileTable extends React.Component<FileTableProps, FileTableState> {
   constructor(props: FileTableProps) {
