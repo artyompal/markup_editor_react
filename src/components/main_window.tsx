@@ -1,5 +1,4 @@
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
 
 import React from 'react';
@@ -28,18 +27,38 @@ import image_size from 'image-size';
 
 import 'react-h5-audio-player/lib/styles.css'
 
-import Spectrogram from 'components/spectrogram';
-import FileTable from 'components/file_table';
+import Spectrogram from './spectrogram';
+import FileTable from './file_table';
+import * as editor from '../logic/editor';
 
-import {CACHE_PATH, MP3_BASE_PATH} from 'logic/settings';
+import {CACHE_PATH, MP3_BASE_PATH} from '../logic/settings';
 
 
-export default class MainWindow extends React.Component {
-  constructor(props) {
+interface MainWindowProps {
+};
+
+interface MainWindowState {
+  mp3_file: string;
+  spectrum_file: string;
+  marks: number[],
+  duration: number;
+  time: number;
+  show_filter_bars_dlg: boolean;
+  spectrum_width: number;
+  spectrum_height: number;
+  artist: string;
+  song_name: string;
+};
+
+export default class MainWindow extends React.Component<MainWindowProps, MainWindowState> {
+  player: any;
+  num_processes: number;
+
+  constructor(props: MainWindowProps) {
     super(props);
-    this.state = {mp3_file: undefined, spectrum_file: undefined, marks: [],
-      duration: undefined, time: 0, show_filter_bars_dlg: false,
-      spectrum_width: 0, spectrum_height: 0};
+    this.state = {mp3_file: '', spectrum_file: '', marks: [],
+      duration: 0, time: 0, show_filter_bars_dlg: false,
+      spectrum_width: 0, spectrum_height: 0, artist: '', song_name: ''};
 
     this.player = React.createRef();
     this.num_processes = 0;
@@ -59,8 +78,10 @@ export default class MainWindow extends React.Component {
     let load_spectrogram = () => {
       console.log('loading spectrogram', spectrum_path);
       const spectrum_sz = image_size(spectrum_path);
-      this.setState({mp3_file: 'file://' + mp3_path, spectrum_file: 'file://' + spectrum_path,
-                     spectrum_width: spectrum_sz.width, spectrum_height: spectrum_sz.height});
+      this.setState({mp3_file: 'file://' + mp3_path,
+                     spectrum_file: 'file://' + spectrum_path, // @ts-ignore
+                     spectrum_width: spectrum_sz.width, // @ts-ignore
+                     spectrum_height: spectrum_sz.height});
     }
 
     const spectrum_path = this.get_cache_path(mp3_path, '.cqt.png');
@@ -91,7 +112,7 @@ export default class MainWindow extends React.Component {
 
     if (fs.existsSync(beats_path)) {
       console.log('loading beats', beats_path);
-      const beats = JSON.parse(fs.readFileSync(beats_path));
+      const beats = JSON.parse(fs.readFileSync(beats_path).toString());
       this.setState({marks: beats});
       return;
     }
@@ -104,7 +125,7 @@ export default class MainWindow extends React.Component {
       this.num_processes--;
 
       if (code == 0) {
-        child.stdout.read().toString().split('\n').forEach((line) => {
+        child.stdout.read().toString().split('\n').forEach((line: string) => {
           if (line.startsWith('ticks: ')) {
             const beats = JSON.parse(line.substr(7));
 
@@ -124,12 +145,16 @@ export default class MainWindow extends React.Component {
     this.generate_spectrogram(mp3_path);
     this.generate_beats(mp3_path);
 
-    const capitalize = (s) => s.substring(0, 1).toUpperCase() + s.substr(1);
+    if (editor.have_file(mp3_path)) {
+      editor.open_file(mp3_path);
+    }
+
+    const capitalize = (s: string) => s.substring(0, 1).toUpperCase() + s.substr(1);
     this.setState({artist: capitalize(artist), song_name: capitalize(song_name)});
   }
 
   close_file() {
-    this.setState({mp3_file: undefined, spectrum_file: undefined, marks: []});
+    this.setState({mp3_file: '', spectrum_file: '', marks: []});
   }
 
   on_playing() {
@@ -140,14 +165,14 @@ export default class MainWindow extends React.Component {
     }
   }
 
-  seek(time: float) {
+  seek(time: number) {
     if (time >= 0 && time < this.state.duration) {
       this.player.current.audio.current.currentTime = time;
     }
   }
 
-  render_title(hint) {
-    let title = 'Music Markup Editor' + hint;
+  render_title(status: string) {
+    let title = 'Music Markup Editor' + status;
     return (
       <Helmet>
         <title>{title}</title>
@@ -159,7 +184,7 @@ export default class MainWindow extends React.Component {
     return (
       <>
         <div className="toolbar">
-          <Tooltip title="Create file">
+          <Tooltip title="Create a new file">
             <IconButton aria-label="Create file" disableRipple={true}>
             <NoteAddIcon />
             </IconButton>
@@ -214,12 +239,12 @@ export default class MainWindow extends React.Component {
         <Modal.Body>
           <Form>
             <Row className="mb-3">
-              <Form.Group  as={Col}>
+              <Form.Group as={Col}>
                 <Form.Label>Start offset</Form.Label>
                 <Form.Control type="number" placeholder="Enter a number" />
               </Form.Group>
 
-              <Form.Group  as={Col}>
+              <Form.Group as={Col}>
                 <Form.Label>Frequency</Form.Label>
                 <Form.Control type="number" placeholder="Enter a number" />
               </Form.Group>

@@ -2,17 +2,34 @@ import React from 'react';
 
 const SCALE_STEP = 0.5;
 const MIN_SCALE = 1.0;
-const MAX_SCALE = 50.0
+const MAX_SCALE = 50.0;
 
 
-export default class Spectrogram extends React.Component {
-  constructor(props) {
+interface SpectrogramProps {
+  spectrum_file: string;
+  marks: number[];
+  duration: number;
+  time: number;
+  main_window: any;
+  width: number;
+   height: number;
+};
+
+interface SpectrogramState {
+  scale: number;
+};
+
+export default class Spectrogram extends React.Component<SpectrogramProps, SpectrogramState> {
+  scroll_holder: any;
+
+  constructor(props: SpectrogramProps) {
     super(props);
     this.state = {scale: 1};
     this.scroll_holder = React.createRef();
   }
 
-  on_wheel(e) {
+  on_wheel(e: React.SyntheticEvent) {
+    // @ts-ignore
     let new_scale = this.state.scale + (e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP);
     new_scale = Math.min(Math.max(new_scale, MIN_SCALE), MAX_SCALE);
 
@@ -21,10 +38,11 @@ export default class Spectrogram extends React.Component {
     }
   }
 
-  on_double_click(e) {
+  on_double_click(e: React.SyntheticEvent) {
     e.preventDefault();
 
     const rect = this.scroll_holder.current.getBoundingClientRect();
+    // @ts-ignore
     const time = (this.scroll_holder.current.scrollLeft + e.clientX - rect.left) /
                  (this.props.width * this.state.scale) * this.props.duration;
 

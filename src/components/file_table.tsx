@@ -2,18 +2,33 @@ import fs from 'fs';
 import path from 'path';
 import React from 'react';
 
-import {CACHE_PATH} from 'logic/settings';
+import {CACHE_PATH} from '../logic/settings';
 
 
-export default class FileTable extends React.Component {
-  constructor(props) {
+interface FileTableProps {
+  main_window: any;
+};
+
+interface SongInfo {
+  tags: string[];
+  mp3: string;
+  tab: string;
+};
+
+interface FileTableState {
+  songs: SongInfo[];
+};
+
+export default class FileTable extends React.Component<FileTableProps, FileTableState> {
+  constructor(props: FileTableProps) {
     super(props);
 
-    const songs = JSON.parse(fs.readFileSync(path.join(CACHE_PATH, 'scores_database.json')));
+    const content = fs.readFileSync(path.join(CACHE_PATH, 'scores_database.json'));
+    const songs = JSON.parse(content.toString());
     this.state = {songs: songs};
   }
 
-  on_double_click(idx, e) {
+  on_double_click(idx: number, e: React.SyntheticEvent) {
     e.preventDefault();
 
     // Prevent Chrome drag selection bug

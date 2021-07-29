@@ -22,12 +22,17 @@
     "resolveJsonModule": true,
     "allowJs": true
   },
+  "compilerOptions": {
+    "skipLibCheck": true
+  },
   "exclude": [
     "test",
     "release",
     "src/main.prod.js",
     "src/renderer.prod.js",
     "src/dist",
-    ".erb/dll"
+    ".erb/dll",
+    "node_modules",
+    "src/__tests__",
   ]
 }
