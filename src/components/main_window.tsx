@@ -43,7 +43,7 @@ interface MainWindowState {
   marks: number[],
   duration: number;
   time: number;
-  show_filter_bars_dlg: boolean;
+  show_filter_dialog: boolean;
   spectrum_width: number;
   spectrum_height: number;
   artist: string;
@@ -52,15 +52,19 @@ interface MainWindowState {
 
 export default class MainWindow extends React.Component<MainWindowProps, MainWindowState> {
   player: any;
+  ref_filter_start: any;
+  ref_filter_freq: any;
   num_processes: number;
 
   constructor(props: MainWindowProps) {
     super(props);
     this.state = {mp3_file: '', spectrum_file: '', marks: [],
-      duration: 0, time: 0, show_filter_bars_dlg: false,
+      duration: 0, time: 0, show_filter_dialog: false,
       spectrum_width: 0, spectrum_height: 0, artist: '', song_name: ''};
 
     this.player = React.createRef();
+    this.ref_filter_start = React.createRef();
+    this.ref_filter_freq = React.createRef();
     this.num_processes = 0;
   }
 
@@ -211,7 +215,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
         <div className="toolbar">
           <Tooltip title="Filter bars">
             <IconButton aria-label="Filter" disableRipple={true}
-              onClick={() => {this.setState({show_filter_bars_dlg: true})}}>
+              onClick={() => {this.setState({show_filter_dialog: true})}}>
               <FilterListIcon />
             </IconButton>
           </Tooltip>
@@ -231,30 +235,44 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   }
 
   render_filter_bars_dialog() {
+    const on_submit = () => {
+      const start = parseInt(this.ref_filter_start.current.value);
+      const freq = parseInt(this.ref_filter_freq.current.value);
+
+      this.setState({
+        marks: editor.filter_bars(this.state.marks, start, freq),
+        show_filter_dialog: false,
+      });
+    }
+
     return (
-      <Modal show={true} backdrop="static" keyboard={false} centered>
-        <Modal.Header >
+      <Modal show={true} centered onHide={() => {
+        this.setState({show_filter_dialog: false})}} >
+        <Modal.Header>
           <Modal.Title>Filter Bars - please enter parameters:</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
+          <Form onSubmit={() => on_submit()}>
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>Start offset</Form.Label>
-                <Form.Control type="number" placeholder="Enter a number" />
+                <Form.Control type="number" placeholder="Enter a number"
+                  ref={this.ref_filter_start}
+                  />
               </Form.Group>
 
               <Form.Group as={Col}>
                 <Form.Label>Frequency</Form.Label>
-                <Form.Control type="number" placeholder="Enter a number" />
+                <Form.Control type="number" placeholder="Enter a number"
+                  ref={this.ref_filter_freq} />
               </Form.Group>
             </Row>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="primary">OK</Button>
+            <Button variant="primary" onClick={on_submit}>OK</Button>
             <Button variant="secondary"
-              onClick={() => {this.setState({show_filter_bars_dlg: false})}}
+              onClick={() => {this.setState({show_filter_dialog: false})}}
               >Cancel</Button>
         </Modal.Footer>
       </Modal>
@@ -298,7 +316,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
             onLoadedData={() => this.on_playing()} onListen={() => this.on_playing()}
             listenInterval={16}
             />
-          {this.state.show_filter_bars_dlg ? this.render_filter_bars_dialog() : null}
+          {this.state.show_filter_dialog ? this.render_filter_bars_dialog() : null}
         </div>
       );
     }

@@ -42,7 +42,14 @@ export function redo() {
 }
 
 
-export function filter_bars(start: number, divider: number) {
+export function filter_bars(marks: number[], start: number, divider: number): number[] {
+  let res = [];
+
+  for (let idx = start; idx < marks.length; idx += divider) {
+    res.push(marks[idx]);
+  }
+
+  return res;
 }
 
 export function add_bar() {
