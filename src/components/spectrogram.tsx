@@ -7,7 +7,7 @@ const MAX_SCALE = 50.0;
 
 interface SpectrogramProps {
   spectrum_file: string;
-  marks: number[];
+  bars: number[];
   duration: number;
   time: number;
   main_window: any;
@@ -73,11 +73,11 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
   }
 
   render_marks() {
-    if (!this.props.marks) {
+    if (!this.props.bars) {
       return null;
     }
 
-    return this.props.marks.map((coord, idx) => {
+    return this.props.bars.map((coord, idx) => {
       if (coord < 0 || coord >= this.props.duration) {
         return null;
       }

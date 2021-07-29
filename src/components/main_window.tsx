@@ -40,7 +40,7 @@ interface MainWindowProps {
 interface MainWindowState {
   mp3_file: string;
   spectrum_file: string;
-  marks: number[],
+  bars: number[],
   duration: number;
   time: number;
   show_filter_dialog: boolean;
@@ -58,7 +58,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   constructor(props: MainWindowProps) {
     super(props);
-    this.state = {mp3_file: '', spectrum_file: '', marks: [],
+    this.state = {mp3_file: '', spectrum_file: '', bars: [],
       duration: 0, time: 0, show_filter_dialog: false,
       spectrum_width: 0, spectrum_height: 0, artist: '', song_name: ''};
 
@@ -68,7 +68,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     this.num_processes = 0;
   }
 
-  get_cache_path(file_path: string, suffix: string) {
+  get_cache_path(file_path: string, suffix: string): string {
     file_path = fs.realpathSync(file_path);
 
     if (file_path.startsWith(MP3_BASE_PATH)) {
@@ -111,13 +111,12 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     });
   }
 
-  generate_beats(mp3_path: string) {
+  generate_beats(mp3_path: string, handler: (bars: number[]) => any) {
     const beats_path = this.get_cache_path(mp3_path, '.beats.json');
 
     if (fs.existsSync(beats_path)) {
-      console.log('loading beats', beats_path);
-      const beats = JSON.parse(fs.readFileSync(beats_path).toString());
-      this.setState({marks: beats});
+      const bars = JSON.parse(fs.readFileSync(beats_path).toString());
+      handler(bars);
       return;
     }
 
@@ -131,12 +130,12 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       if (code == 0) {
         child.stdout.read().toString().split('\n').forEach((line: string) => {
           if (line.startsWith('ticks: ')) {
-            const beats = JSON.parse(line.substr(7));
+            const bars = JSON.parse(line.substr(7));
 
             fs.mkdirSync(path.dirname(beats_path), {recursive: true});
-            fs.writeFileSync(beats_path, JSON.stringify(beats));
+            fs.writeFileSync(beats_path, JSON.stringify(bars));
 
-            this.setState({...this.state, marks: beats});
+            handler(bars);
           }
         });
       } else {
@@ -147,25 +146,28 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   open_file(artist: string, song_name: string, mp3_path: string, tab_path: string) {
     this.generate_spectrogram(mp3_path);
-    this.generate_beats(mp3_path);
 
     if (editor.have_file(mp3_path)) {
-      editor.open_file(mp3_path);
+      this.setState(editor.open_file(mp3_path));
+    } else {
+      this.generate_beats(mp3_path, (bars: number[]) => {
+        this.setState(editor.create_file(mp3_path, bars));
+      });
     }
 
     const capitalize = (s: string) => s.substring(0, 1).toUpperCase() + s.substr(1);
     this.setState({artist: capitalize(artist), song_name: capitalize(song_name)});
   }
 
-  close_file() {
-    this.setState({mp3_file: '', spectrum_file: '', marks: []});
+  close_file()  {
+    editor.close_file();
+    this.setState({mp3_file: '', spectrum_file: '', bars: []});
   }
 
   on_playing() {
     if (this.player && this.player.current && this.player.current.audio) {
-      this.setState({...this.state,
-                     duration: this.player.current.audio.current.duration,
-                     time: this.player.current.audio.current.currentTime});
+      this.setState({ duration: this.player.current.audio.current.duration,
+                      time: this.player.current.audio.current.currentTime });
     }
   }
 
@@ -240,7 +242,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       const freq = parseInt(this.ref_filter_freq.current.value);
 
       this.setState({
-        marks: editor.filter_bars(this.state.marks, start, freq),
+        bars: editor.filter_bars(start, freq).bars,
         show_filter_dialog: false,
       });
     }
@@ -293,7 +295,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   }
 
   render() {
-    if (!this.state.mp3_file || !this.state.marks) {
+    if (!this.state.mp3_file || !this.state.bars) {
       return (
         <div>
           {this.render_title(' | Select song to continue')}
@@ -307,7 +309,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
           {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
           {this.render_toolbar()}
           <Spectrogram
-            spectrum_file={this.state.spectrum_file} marks={this.state.marks}
+            spectrum_file={this.state.spectrum_file} bars={this.state.bars}
             duration={this.state.duration} time={this.state.time} main_window={this}
             width={this.state.spectrum_width} height={this.state.spectrum_height} />
           <AudioPlayer
