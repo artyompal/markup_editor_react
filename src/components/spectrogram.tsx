@@ -64,7 +64,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
           <svg className="svg-block" width={w} onDoubleClick={(e) => this.on_double_click(e)}>
             <image href={this.props.spectrum_file} preserveAspectRatio="none"
               x={0} y={0} width={w} height={h} />
-            { this.render_marks() }
+            { this.render_bars() }
             <line className="cursor" y1={0} y2={10000} x1={pos} x2={pos} />
           </svg>
         </div>
@@ -72,7 +72,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
     );
   }
 
-  render_marks() {
+  render_bars() {
     if (!this.props.bars) {
       return null;
     }

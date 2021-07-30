@@ -11,7 +11,7 @@ interface DocumentState {
 }
 
 let history: DocumentState[] = [];
-// let history_step = 0;
+let history_step = 0;
 
 let document_state: DocumentState = { bars: [] };
 let document_path = '';
@@ -35,7 +35,7 @@ export function have_file(mp3_path: string): boolean {
 export function create_file(mp3_path: string, bars: number[]): DocumentState {
   document_path = get_document_path(mp3_path, '.markup.json');
   document_state.bars = bars;
-  history = [];
+  history_reset();
   return document_state;
 }
 
@@ -43,7 +43,7 @@ export function open_file(mp3_path: string): DocumentState {
   document_path = get_document_path(mp3_path, '.markup.json');
   const json = JSON.parse(fs.readFileSync(document_path).toString());
   document_state.bars = json.bars;
-  history = [];
+  history_reset();
   return document_state;
 }
 
@@ -59,30 +59,54 @@ export function close_file() {
 }
 
 
+function history_reset() {
+  history.length = 0;
+  history.push(document_state);
+  history_step = 0;
+}
+
+function history_push(new_state: DocumentState) {
+  document_state = new_state;
+  history.length = history_step + 1;
+  history.push(document_state);
+  history_step += 1;
+}
+
 export function can_undo(): boolean {
-  return history.length != 0;
+  return history_step > 0; // && history.length > 1;
 }
 
 export function can_redo(): boolean {
-  return history.length != 0;
+  return history_step < history.length - 1;
 }
 
-export function undo() {
+export function undo(): DocumentState {
+  if (can_undo()) {
+    history_step -= 1;
+    document_state = history[history_step];
+  }
+
+  return document_state;
 }
 
-export function redo() {
+export function redo(): DocumentState {
+  if (can_redo()) {
+    history_step += 1;
+    document_state = history[history_step];
+  }
+
+  return document_state;
 }
 
 
 export function filter_bars(start: number, divider: number): DocumentState {
-  let res = [];
+  let bars = [];
 
   for (let idx = start; idx < document_state.bars.length; idx += divider) {
-    res.push(document_state.bars[idx]);
+    bars.push(document_state.bars[idx]);
   }
 
-  history.push(document_state);
-  document_state.bars = res;
+  history_push({ bars });
   return document_state;
 }
 

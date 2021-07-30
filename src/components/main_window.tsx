@@ -144,6 +144,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     });
   }
 
+  // @ts-ignore
   open_file(artist: string, song_name: string, mp3_path: string, tab_path: string) {
     this.generate_spectrogram(mp3_path);
 
@@ -210,14 +211,18 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
         </div>
         <div className="toolbar">
           <Tooltip title="Undo">
-            <IconButton aria-label="Undo" disableRipple={true}>
-              <UndoIcon />
-            </IconButton>
+            <span>
+              <IconButton aria-label="Undo" disableRipple={true} disabled={!editor.can_undo()}>
+                <UndoIcon />
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title="Redo">
-            <IconButton aria-label="Redo" disableRipple={true}>
-              <RedoIcon />
-            </IconButton>
+            <span>
+              <IconButton aria-label="Redo" disableRipple={true} disabled={!editor.can_redo()}>
+                <RedoIcon />
+              </IconButton>
+            </span>
           </Tooltip>
         </div>
         <div className="toolbar">
