@@ -10,10 +10,10 @@ interface DocumentState {
   bars: number[];
 }
 
-let history: DocumentState[] = [];
+let history: Readonly<DocumentState>[] = [];
 let history_step = 0;
 
-let document_state: DocumentState = { bars: [] };
+let document_state: Readonly<DocumentState> = { bars: [] };
 let document_path = '';
 
 
@@ -34,7 +34,7 @@ export function have_file(mp3_path: string): boolean {
 
 export function create_file(mp3_path: string, bars: number[]): DocumentState {
   document_path = get_document_path(mp3_path, '.markup.json');
-  document_state.bars = bars;
+  document_state = { bars };
   history_reset();
   return document_state;
 }
@@ -42,7 +42,7 @@ export function create_file(mp3_path: string, bars: number[]): DocumentState {
 export function open_file(mp3_path: string): DocumentState {
   document_path = get_document_path(mp3_path, '.markup.json');
   const json = JSON.parse(fs.readFileSync(document_path).toString());
-  document_state.bars = json.bars;
+  document_state = { bars: json.bars };
   history_reset();
   return document_state;
 }
@@ -55,7 +55,7 @@ function save_file() {
 export function close_file() {
   save_file();
   history = [];
-  document_state.bars = [];
+  document_state = { bars: [] };
 }
 
 
