@@ -166,8 +166,14 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   on_playing() {
     if (this.player && this.player.current && this.player.current.audio) {
-      this.setState({ duration: this.player.current.audio.current.duration,
-                      time: this.player.current.audio.current.currentTime });
+      const audio = this.player.current.audio.current;
+
+      const redraw = () => {
+        this.setState({ duration: audio.duration, time: audio.currentTime });
+        window.requestAnimationFrame(redraw);
+      }
+
+      window.requestAnimationFrame(redraw);
     }
   }
 
@@ -315,8 +321,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
           <AudioPlayer
             className="player" autoPlayAfterSrcChange={false}
             src={this.state.mp3_file} ref={this.player}
-            onLoadedData={() => this.on_playing()} onListen={() => this.on_playing()}
-            listenInterval={16}
+            onLoadedData={() => this.on_playing()}
             />
           {this.state.show_filter_dialog ? this.render_filter_bars_dialog() : null}
         </div>
