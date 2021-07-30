@@ -6,7 +6,7 @@ const MAX_SCALE = 50.0;
 
 
 interface SpectrogramProps {
-  spectrum_file: string;
+  spectrum_url: string;
   bars: number[];
   duration: number;
   time: number;
@@ -50,7 +50,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
   }
 
   render() {
-    if (!this.props.spectrum_file || !this.props.duration) {
+    if (!this.props.spectrum_url || !this.props.duration) {
       return null;
     }
 
@@ -62,7 +62,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
       <div className="svg-outer-holder" onWheel={(e) => this.on_wheel(e)}>
         <div className="svg-holder" ref={this.scroll_holder}>
           <svg className="svg-block" width={w} onDoubleClick={(e) => this.on_double_click(e)}>
-            <image href={this.props.spectrum_file} preserveAspectRatio="none"
+            <image href={this.props.spectrum_url} preserveAspectRatio="none"
               x={0} y={0} width={w} height={h} />
             { this.render_bars() }
             <line className="cursor" y1={0} y2={10000} x1={pos} x2={pos} />

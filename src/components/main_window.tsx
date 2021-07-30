@@ -38,8 +38,8 @@ interface MainWindowProps {
 }
 
 interface MainWindowState {
-  mp3_file: string;
-  spectrum_file: string;
+  mp3_url: string;
+  spectrum_url: string;
   bars: number[],
   duration: number;
   time: number;
@@ -51,6 +51,7 @@ interface MainWindowState {
 }
 
 export default class MainWindow extends React.Component<MainWindowProps, MainWindowState> {
+  mp3_path: string = '';
   player: any;
   ref_filter_start: any;
   ref_filter_freq: any;
@@ -58,7 +59,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   constructor(props: MainWindowProps) {
     super(props);
-    this.state = {mp3_file: '', spectrum_file: '', bars: [],
+    this.state = {mp3_url: '', spectrum_url: '', bars: [],
       duration: 0, time: 0, show_filter_dialog: false,
       spectrum_width: 0, spectrum_height: 0, artist: '', song_name: ''};
 
@@ -82,8 +83,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     const load_spectrogram = () => {
       console.log('loading spectrogram', spectrum_path);
       const spectrum_sz = image_size(spectrum_path);
-      this.setState({mp3_file: 'file://' + mp3_path,
-                     spectrum_file: 'file://' + spectrum_path, // @ts-ignore
+      this.setState({mp3_url: 'file://' + mp3_path,
+                     spectrum_url: 'file://' + spectrum_path, // @ts-ignore
                      spectrum_width: spectrum_sz.width, // @ts-ignore
                      spectrum_height: spectrum_sz.height});
     }
@@ -144,16 +145,21 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     });
   }
 
+  create_new() {
+    this.generate_beats(this.mp3_path, (bars: number[]) => {
+      this.setState(editor.create_file(this.mp3_path, bars));
+    });
+  }
+
   // @ts-ignore
   open_file(artist: string, song_name: string, mp3_path: string, tab_path: string) {
+    this.mp3_path = mp3_path;
     this.generate_spectrogram(mp3_path);
 
     if (editor.have_file(mp3_path)) {
       this.setState(editor.open_file(mp3_path));
     } else {
-      this.generate_beats(mp3_path, (bars: number[]) => {
-        this.setState(editor.create_file(mp3_path, bars));
-      });
+      this.create_new();
     }
 
     const capitalize = (s: string) => s.substring(0, 1).toUpperCase() + s.substr(1);
@@ -162,7 +168,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   close_file()  {
     editor.close_file();
-    this.setState({mp3_file: '', spectrum_file: '', bars: []});
+    this.setState({mp3_url: '', spectrum_url: '', bars: []});
   }
 
   on_playing() {
@@ -197,8 +203,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     return (
       <>
         <div className="toolbar">
-          <Tooltip title="Create a new file">
-            <IconButton aria-label="Create file" disableRipple={true}>
+          <Tooltip title="Regenerate default bars">
+            <IconButton aria-label="Create file" disableRipple={true}
+              onClick={() => this.create_new()}>
             <NoteAddIcon />
             </IconButton>
           </Tooltip>
@@ -306,7 +313,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   }
 
   render() {
-    if (!this.state.mp3_file || !this.state.bars) {
+    if (!this.state.mp3_url || !this.state.bars) {
       return (
         <div>
           {this.render_title(' | Select song to continue')}
@@ -320,12 +327,12 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
           {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
           {this.render_toolbar()}
           <Spectrogram
-            spectrum_file={this.state.spectrum_file} bars={this.state.bars}
+            spectrum_url={this.state.spectrum_url} bars={this.state.bars}
             duration={this.state.duration} time={this.state.time} main_window={this}
             width={this.state.spectrum_width} height={this.state.spectrum_height} />
           <AudioPlayer
             className="player" autoPlayAfterSrcChange={false}
-            src={this.state.mp3_file} ref={this.player}
+            src={this.state.mp3_url} ref={this.player}
             onLoadedData={() => this.on_playing()}
             />
           {this.state.show_filter_dialog ? this.render_filter_bars_dialog() : null}
