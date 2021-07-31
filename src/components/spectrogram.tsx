@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Cursor from './cursor';
+
 const SCALE_STEP = 0.5;
 const MIN_SCALE = 1.0;
 const MAX_SCALE = 50.0;
@@ -9,10 +11,10 @@ interface SpectrogramProps {
   spectrum_url: string;
   bars: number[];
   duration: number;
-  time: number;
   main_window: any;
   width: number;
   height: number;
+  audio?: HTMLAudioElement;
 }
 
 interface SpectrogramState {
@@ -56,7 +58,6 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
 
     const scale = this.state.scale;
     const w = this.props.width * scale, h = this.props.height;
-    const pos = w * this.props.time / this.props.duration;
 
     return (
       <div className="svg-outer-holder" onWheel={(e) => this.on_wheel(e)}>
@@ -65,7 +66,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
             <image href={this.props.spectrum_url} preserveAspectRatio="none"
               x={0} y={0} width={w} height={h} />
             { this.render_bars() }
-            <line className="cursor" y1={0} y2={10000} x1={pos} x2={pos} />
+            <Cursor logical_width={w} duration={this.props.duration} audio={this.props.audio} />
           </svg>
         </div>
       </div>

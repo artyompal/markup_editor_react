@@ -42,7 +42,6 @@ interface MainWindowState {
   spectrum_url: string;
   bars: number[],
   duration: number;
-  time: number;
   show_filter_dialog: boolean;
   spectrum_width: number;
   spectrum_height: number;
@@ -60,7 +59,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   constructor(props: MainWindowProps) {
     super(props);
     this.state = {mp3_url: '', spectrum_url: '', bars: [],
-      duration: 0, time: 0, show_filter_dialog: false,
+      duration: 0, show_filter_dialog: false,
       spectrum_width: 0, spectrum_height: 0, artist: '', song_name: ''};
 
     this.player = React.createRef();
@@ -171,16 +170,10 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     this.setState({mp3_url: '', spectrum_url: '', bars: []});
   }
 
-  on_playing() {
-    if (this.player && this.player.current && this.player.current.audio) {
+  on_loaded_data() {
+    if (this.player.current.audio) {
       const audio = this.player.current.audio.current;
-
-      const redraw = () => {
-        this.setState({ duration: audio.duration, time: audio.currentTime });
-        window.requestAnimationFrame(redraw);
-      }
-
-      window.requestAnimationFrame(redraw);
+      this.setState({ duration: audio.duration });
     }
   }
 
@@ -328,12 +321,13 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
           {this.render_toolbar()}
           <Spectrogram
             spectrum_url={this.state.spectrum_url} bars={this.state.bars}
-            duration={this.state.duration} time={this.state.time} main_window={this}
+            duration={this.state.duration} main_window={this}
+            audio={this.player.current ? this.player.current.audio.current : null}
             width={this.state.spectrum_width} height={this.state.spectrum_height} />
           <AudioPlayer
             className="player" autoPlayAfterSrcChange={false}
             src={this.state.mp3_url} ref={this.player}
-            onLoadedData={() => this.on_playing()}
+            onLoadedData={() => this.on_loaded_data()}
             />
           {this.state.show_filter_dialog ? this.render_filter_bars_dialog() : null}
         </div>
