@@ -28,6 +28,7 @@ export default class Cursor extends React.Component<CursorProps, CursorState> {
     }
   }
 
+  // @ts-ignore
   shouldComponentUpdate(next_props: CursorProps, next_state: CursorState): boolean {
     if (next_props.audio && !this.props.audio) {
       next_props.audio.addEventListener('play', this.on_play);

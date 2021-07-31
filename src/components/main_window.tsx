@@ -183,6 +183,28 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     }
   }
 
+  toggle_playback() {
+    if (this.player.current && this.player.current.audio.current) {
+      const audio = this.player.current.audio.current;
+
+      if ((audio.paused || audio.ended) && audio.src) {
+        audio.play();
+      } else if (!audio.paused) {
+        audio.pause();
+      }
+    }
+  }
+
+  on_key_down = (e: React.KeyboardEvent): void => {
+    switch (e.key) {
+      case ' ':
+        e.preventDefault() // Prevent scrolling page by pressing Space key
+        e.stopPropagation();
+        this.toggle_playback();
+        break;
+    }
+  }
+
   render_title(status: string) {
     let title = 'Music Markup Editor' + status;
     return (
@@ -316,7 +338,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       );
     } else {
       return (
-        <div>
+        <div onKeyDown={this.on_key_down} tabIndex="0">
           {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
           {this.render_toolbar()}
           <Spectrogram
