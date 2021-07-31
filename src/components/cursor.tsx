@@ -25,13 +25,27 @@ export default class Cursor extends React.Component<CursorProps, CursorState> {
       this.props.audio.addEventListener('play', this.on_play);
       this.props.audio.addEventListener('pause', this.on_pause);
       this.props.audio.addEventListener('seeked', this.on_seek);
-    } else {
-      console.error('this.props.audio is', this.props.audio);
     }
+  }
+
+  shouldComponentUpdate(next_props: CursorProps, next_state: CursorState): boolean {
+    if (next_props.audio && !this.props.audio) {
+      next_props.audio.addEventListener('play', this.on_play);
+      next_props.audio.addEventListener('pause', this.on_pause);
+      next_props.audio.addEventListener('seeked', this.on_seek);
+    }
+
+    return true;
   }
 
   componentWillUnmount(): void {
     this.on_pause();
+
+    if (this.props.audio) {
+      this.props.audio.removeEventListener('play', this.on_play);
+      this.props.audio.removeEventListener('pause', this.on_pause);
+      this.props.audio.removeEventListener('seeked', this.on_seek);
+    }
   }
 
   on_play = (): void => {
