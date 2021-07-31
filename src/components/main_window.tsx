@@ -338,7 +338,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       );
     } else {
       return (
-        <div onKeyDown={this.on_key_down} tabIndex="0">
+        <div onKeyDown={this.on_key_down} tabIndex={0}>
           {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
           {this.render_toolbar()}
           <Spectrogram
