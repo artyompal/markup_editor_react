@@ -115,11 +115,27 @@ export function filter_bars(start: number, divider: number): DocumentState {
 export function add_bar(time: number): DocumentState {
   let bars = document_state.bars;
   const location = utils.lower_bound(bars, time);
+
+  if (bars[location] == time) {
+    return document_state;
+  }
+
   bars = [...bars.slice(0, location), time, ...bars.slice(location)];
 
   history_push({ bars });
   return document_state;
 }
 
-export function remove_bar() {
+export function remove_bar(time: number): DocumentState {
+  let bars = document_state.bars;
+  const location = utils.find_closest(bars, time);
+
+  if (location === undefined) {
+    return document_state;
+  }
+
+  bars = [...bars.slice(0, location), ...bars.slice(location + 1)];
+
+  history_push({ bars });
+  return document_state;
 }

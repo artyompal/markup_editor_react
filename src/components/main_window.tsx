@@ -214,6 +214,10 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   }
 
   remove_bar = (): void => {
+    if (this.player.current && this.player.current.audio.current) {
+      const time = this.player.current.audio.current.currentTime;
+      this.setState(editor.remove_bar(time));
+    }
   }
 
   render_title(status: string) {
