@@ -7,6 +7,7 @@ import {MP3_BASE_PATH, RESULTS_PATH} from '../logic/settings';
 
 
 const VERSION = 1;
+const AUTOSAVE_TIMEOUT = 5000;
 
 interface DocumentState {
   bars: number[];
@@ -17,6 +18,8 @@ let history_step = 0;
 
 let document_state: Readonly<DocumentState> = { bars: [] };
 let document_path = '';
+
+let autosave_timeout_id: number;
 
 
 function get_document_path(file_path: string, suffix: string): string {
@@ -38,6 +41,7 @@ export function create_file(mp3_path: string, bars: number[]): DocumentState {
   document_path = get_document_path(mp3_path, '.markup.json');
   document_state = { bars };
   history_reset();
+  save_file();
   return document_state;
 }
 
@@ -46,16 +50,19 @@ export function open_file(mp3_path: string): DocumentState {
   const json = JSON.parse(fs.readFileSync(document_path).toString());
   document_state = { bars: json.bars };
   history_reset();
+  save_file();
   return document_state;
 }
 
 function save_file(): void {
   const data = { version: VERSION, bars: document_state.bars };
   fs.writeFileSync(document_path, JSON.stringify(data));
+  autosave_timeout_id = window.setTimeout(save_file, AUTOSAVE_TIMEOUT);
 }
 
 export function close_file(): void {
   save_file();
+  clearTimeout(autosave_timeout_id);
   history = [];
   document_state = { bars: [] };
 }

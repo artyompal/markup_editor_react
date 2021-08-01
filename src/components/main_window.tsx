@@ -68,6 +68,12 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     this.num_processes = 0;
   }
 
+  componentWillUnmount() {
+    if (this.state.mp3_url) {
+      this.close_file();
+    }
+  }
+
   get_cache_path(file_path: string, suffix: string): string {
     file_path = fs.realpathSync(file_path);
 
