@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import * as utils from './utils';
+
 import {MP3_BASE_PATH, RESULTS_PATH} from '../logic/settings';
 
 
@@ -47,25 +49,25 @@ export function open_file(mp3_path: string): DocumentState {
   return document_state;
 }
 
-function save_file() {
+function save_file(): void {
   const data = { version: VERSION, bars: document_state.bars };
   fs.writeFileSync(document_path, JSON.stringify(data));
 }
 
-export function close_file() {
+export function close_file(): void {
   save_file();
   history = [];
   document_state = { bars: [] };
 }
 
 
-function history_reset() {
+function history_reset(): void {
   history.length = 0;
   history.push(document_state);
   history_step = 0;
 }
 
-function history_push(new_state: DocumentState) {
+function history_push(new_state: DocumentState): void {
   document_state = new_state;
   history.length = history_step + 1;
   history.push(document_state);
@@ -110,7 +112,13 @@ export function filter_bars(start: number, divider: number): DocumentState {
   return document_state;
 }
 
-export function add_bar() {
+export function add_bar(time: number): DocumentState {
+  let bars = document_state.bars;
+  const location = utils.lower_bound(bars, time);
+  bars = [...bars.slice(0, location), time, ...bars.slice(location)];
+
+  history_push({ bars });
+  return document_state;
 }
 
 export function remove_bar() {

@@ -165,12 +165,12 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     this.setState({artist: capitalize(artist), song_name: capitalize(song_name)});
   }
 
-  close_file()  {
+  close_file = (): void => {
     editor.close_file();
     this.setState({mp3_url: '', spectrum_url: '', bars: []});
   }
 
-  on_loaded_data() {
+  on_loaded_data = (): void => {
     if (this.player.current.audio) {
       const audio = this.player.current.audio.current;
       this.setState({ duration: audio.duration });
@@ -205,6 +205,17 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     }
   }
 
+
+  add_bar = (): void => {
+    if (this.player.current && this.player.current.audio.current) {
+      const time = this.player.current.audio.current.currentTime;
+      this.setState(editor.add_bar(time));
+    }
+  }
+
+  remove_bar = (): void => {
+  }
+
   render_title(status: string) {
     let title = 'Music Markup Editor' + status;
     return (
@@ -219,14 +230,12 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       <>
         <div className="toolbar">
           <Tooltip title="Regenerate default bars">
-            <IconButton aria-label="Create file" disableRipple={true}
-              onClick={() => this.create_new()}>
-            <NoteAddIcon />
+            <IconButton aria-label="Create file" disableRipple={true} onClick={this.create_new}>
+              <NoteAddIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Close file">
-            <IconButton aria-label="Close file" disableRipple={true}
-              onClick={() => this.close_file()}>
+            <IconButton aria-label="Close file" disableRipple={true} onClick={this.close_file}>
               <CloseIcon />
             </IconButton>
           </Tooltip>
@@ -255,12 +264,12 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
             </IconButton>
           </Tooltip>
           <Tooltip title="Add bar">
-            <IconButton aria-label="Add bar" disableRipple={true}>
+            <IconButton aria-label="Add bar" disableRipple={true} onClick={this.add_bar}>
               <AddIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Remove bar">
-            <IconButton aria-label="Remove bar" disableRipple={true}>
+            <IconButton aria-label="Remove bar" disableRipple={true} onClick={this.remove_bar}>
               <RemoveIcon />
             </IconButton>
           </Tooltip>
@@ -349,7 +358,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
           <AudioPlayer
             className="player" autoPlayAfterSrcChange={false}
             src={this.state.mp3_url} ref={this.player}
-            onLoadedData={() => this.on_loaded_data()}
+            onLoadedData={this.on_loaded_data}
             />
           {this.state.show_filter_dialog ? this.render_filter_bars_dialog() : null}
         </div>

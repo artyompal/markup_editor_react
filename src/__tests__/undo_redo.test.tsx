@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import * as editor from '../logic/editor';
 
-describe('MainWindow', () => {
+describe('undo/redo', () => {
   it('should not allow undo/redo for an empty document', () => {
     expect(editor.can_undo()).toBeFalsy();
     expect(editor.can_undo()).toBeFalsy();
