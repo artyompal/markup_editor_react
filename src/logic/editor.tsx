@@ -19,7 +19,7 @@ let history_step = 0;
 let document_state: Readonly<DocumentState> = { bars: [] };
 let document_path = '';
 
-let autosave_timeout_id: number;
+let autosave_timeout_id: number | undefined;
 
 
 function get_document_path(file_path: string, suffix: string): string {
@@ -57,12 +57,17 @@ export function open_file(mp3_path: string): DocumentState {
 function save_file(): void {
   const data = { version: VERSION, bars: document_state.bars };
   fs.writeFileSync(document_path, JSON.stringify(data));
+
+  if (autosave_timeout_id !== undefined) {
+    window.clearTimeout(autosave_timeout_id);
+  }
+
   autosave_timeout_id = window.setTimeout(save_file, AUTOSAVE_TIMEOUT);
 }
 
 export function close_file(): void {
   save_file();
-  clearTimeout(autosave_timeout_id);
+  window.clearTimeout(autosave_timeout_id);
   history = [];
   document_state = { bars: [] };
 }
