@@ -48,13 +48,19 @@ image {
     shape-rendering: auto;
 }
 
-.mark {
+.bar {
     fill: none;
     stroke: black;
     stroke-width: 2;
     shape-rendering: auto;
 }
 
+.active_bar {
+    fill: none;
+    stroke: yellow;
+    stroke-width: 2;
+    shape-rendering: auto;
+}
 
 .file-table-outer {
   position: absolute;

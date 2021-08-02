@@ -5,16 +5,13 @@ interface BarsProps {
   bars: number[];
   logical_width: number;
   duration: number;
+  active_bar: number;
 }
 
-interface BarsState {
-}
 
-
-export default class Bars extends React.Component<BarsProps, BarsState> {
+export default class Bars extends React.Component<BarsProps> {
   constructor(props: BarsProps) {
     super(props);
-    // this.state = { time: 0 };
   }
 
   render(): React.ReactNode {
@@ -24,8 +21,10 @@ export default class Bars extends React.Component<BarsProps, BarsState> {
       }
 
       const x = coord * this.props.logical_width / this.props.duration;
+      const class_name = (idx == this.props.active_bar) ? ' active_bar' : 'bar';
+
       return (
-        <line className="mark" key={idx} x1={x} x2={x} y1={0} y2={10000} />
+        <line className={class_name} key={idx} x1={x} x2={x} y1={0} y2={10000} />
       );
     });
   }

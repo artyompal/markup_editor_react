@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Bars from './bars';
+import * as utils from '../logic/utils';
 
 
 interface CursorAndBarsProps {
@@ -12,6 +13,7 @@ interface CursorAndBarsProps {
 
 interface CursorAndBarsState {
   time: number;
+  active_bar: number;
 }
 
 
@@ -20,7 +22,7 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
 
   constructor(props: CursorAndBarsProps) {
     super(props);
-    this.state = { time: 0 };
+    this.state = { time: 0, active_bar: 0 };
   }
 
   componentDidMount(): void {
@@ -54,7 +56,11 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
 
   on_play = (): void => {
     const redraw = (): void => { // @ts-ignore
-      this.setState({ time: this.props.audio.currentTime });
+      const time = this.props.audio.currentTime;
+      const active_bar = utils.find_closest(this.props.bars, time);
+
+      // @ts-ignore
+      this.setState({ time, active_bar });
       this.raf_handle = window.requestAnimationFrame(redraw);
     }
 
@@ -79,7 +85,7 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
       <>
         <line className="cursor" y1={0} y2={10000} x1={pos} x2={pos} />
         <Bars bars={this.props.bars} logical_width={this.props.logical_width}
-          duration={this.props.duration} / >
+          duration={this.props.duration} active_bar={this.state.active_bar} />
       </>
     );
   }
