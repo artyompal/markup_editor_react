@@ -30,7 +30,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
     this.scroll_holder = React.createRef();
   }
 
-  on_wheel(e: React.SyntheticEvent): void {
+  on_wheel = (e: React.SyntheticEvent): void => {
     // @ts-ignore
     let new_scale = this.state.scale + (e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP);
     new_scale = Math.min(Math.max(new_scale, MIN_SCALE), MAX_SCALE);
@@ -40,7 +40,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
     }
   }
 
-  on_double_click(e: React.SyntheticEvent) {
+  on_double_click = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
     const rect = this.scroll_holder.current.getBoundingClientRect();
@@ -60,9 +60,9 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
     const w = this.props.width * scale, h = this.props.height;
 
     return (
-      <div className="svg-outer-holder" onWheel={(e) => this.on_wheel(e)}>
-        <div className="svg-holder" ref={this.scroll_holder}>
-          <svg className="svg-block" width={w} onDoubleClick={(e) => this.on_double_click(e)}>
+      <div className="svg-outer-holder" onWheel={this.on_wheel} >
+        <div className="svg-holder" ref={this.scroll_holder} draggable={true} >
+          <svg className="svg-block" width={w} onDoubleClick={this.on_double_click} >
             <image href={this.props.spectrum_url} preserveAspectRatio="none"
               x={0} y={0} width={w} height={h} />
             <CursorAndBars logical_width={w} duration={this.props.duration}
