@@ -3,22 +3,22 @@ import React from 'react';
 import Bars from './bars';
 
 
-interface CursorProps {
+interface CursorAndBarsProps {
   logical_width: number;
   duration: number;
   audio?: HTMLAudioElement;
   bars: number[];
 }
 
-interface CursorState {
+interface CursorAndBarsState {
   time: number;
 }
 
 
-export default class Cursor extends React.Component<CursorProps, CursorState> {
+export default class CursorAndBars extends React.Component<CursorAndBarsProps, CursorAndBarsState> {
   raf_handle?: number;
 
-  constructor(props: CursorProps) {
+  constructor(props: CursorAndBarsProps) {
     super(props);
     this.state = { time: 0 };
   }
@@ -32,7 +32,7 @@ export default class Cursor extends React.Component<CursorProps, CursorState> {
   }
 
   // @ts-ignore
-  shouldComponentUpdate(next_props: CursorProps, next_state: CursorState): boolean {
+  shouldComponentUpdate(next_props: CursorAndBarsProps, next_state: CursorAndBarsState): boolean {
     if (next_props.audio && !this.props.audio) {
       next_props.audio.addEventListener('play', this.on_play);
       next_props.audio.addEventListener('pause', this.on_pause);

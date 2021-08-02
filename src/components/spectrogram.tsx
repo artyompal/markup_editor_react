@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Cursor from './cursor';
+import CursorAndBars from './cursor_and_bars';
 
 const SCALE_STEP = 0.5;
 const MIN_SCALE = 1.0;
@@ -65,8 +65,8 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
           <svg className="svg-block" width={w} onDoubleClick={(e) => this.on_double_click(e)}>
             <image href={this.props.spectrum_url} preserveAspectRatio="none"
               x={0} y={0} width={w} height={h} />
-            <Cursor logical_width={w} duration={this.props.duration} audio={this.props.audio}
-              bars={this.props.bars} />
+            <CursorAndBars logical_width={w} duration={this.props.duration}
+              audio={this.props.audio} bars={this.props.bars} />
           </svg>
         </div>
       </div>
