@@ -31,12 +31,6 @@ export default class FileTable extends React.Component<FileTableProps, FileTable
   on_double_click(idx: number, e: React.SyntheticEvent) {
     e.preventDefault();
 
-    // Prevent Chrome drag selection bug
-    const windowSelection: Selection | null = window.getSelection()
-    if (windowSelection && windowSelection.type === 'Range') {
-      windowSelection.empty()
-    }
-
     this.props.main_window.open_file(
       this.state.songs[idx].tags[0],
       this.state.songs[idx].tags[1],
@@ -44,7 +38,7 @@ export default class FileTable extends React.Component<FileTableProps, FileTable
       this.state.songs[idx].tab);
   }
 
-  render() {
+  render(): React.ReactNode {
     return (
       <div className="file-table-outer">
         <div className="file-table-inner">

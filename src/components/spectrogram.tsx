@@ -30,7 +30,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
     this.scroll_holder = React.createRef();
   }
 
-  on_wheel(e: React.SyntheticEvent) {
+  on_wheel(e: React.SyntheticEvent): void {
     // @ts-ignore
     let new_scale = this.state.scale + (e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP);
     new_scale = Math.min(Math.max(new_scale, MIN_SCALE), MAX_SCALE);
@@ -51,7 +51,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
     this.props.main_window.seek(time);
   }
 
-  render() {
+  render(): React.ReactNode {
     if (!this.props.spectrum_url || !this.props.duration) {
       return null;
     }
@@ -73,7 +73,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
     );
   }
 
-  render_bars() {
+  render_bars(): React.ReactNode {
     if (!this.props.bars) {
       return null;
     }

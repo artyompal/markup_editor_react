@@ -68,7 +68,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     this.num_processes = 0;
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     if (this.state.mp3_url) {
       this.close_file();
     }
@@ -84,8 +84,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     return path.join(CACHE_PATH, file_path + suffix);
   }
 
-  generate_spectrogram(mp3_path: string) {
-    const load_spectrogram = () => {
+  generate_spectrogram(mp3_path: string): void {
+    const load_spectrogram = (): void => {
       console.log('loading spectrogram', spectrum_path);
       const spectrum_sz = image_size(spectrum_path);
       this.setState({mp3_url: 'file://' + mp3_path,
@@ -117,7 +117,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     });
   }
 
-  generate_beats(mp3_path: string, handler: (bars: number[]) => any) {
+  generate_beats(mp3_path: string, handler: (bars: number[]) => any): void {
     const beats_path = this.get_cache_path(mp3_path, '.beats.json');
 
     if (fs.existsSync(beats_path)) {
@@ -150,14 +150,14 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     });
   }
 
-  create_new() {
-    this.generate_beats(this.mp3_path, (bars: number[]) => {
+  create_new = (): void => {
+    this.generate_beats(this.mp3_path, (bars: number[]): void => {
       this.setState(editor.create_file(this.mp3_path, bars));
     });
   }
 
   // @ts-ignore
-  open_file(artist: string, song_name: string, mp3_path: string, tab_path: string) {
+  open_file(artist: string, song_name: string, mp3_path: string, tab_path: string): void {
     this.mp3_path = mp3_path;
     this.generate_spectrogram(mp3_path);
 
@@ -183,13 +183,13 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     }
   }
 
-  seek(time: number) {
+  seek(time: number): void {
     if (time >= 0 && time < this.state.duration) {
       this.player.current.audio.current.currentTime = time;
     }
   }
 
-  toggle_playback() {
+  toggle_playback(): void {
     if (this.player.current && this.player.current.audio.current) {
       const audio = this.player.current.audio.current;
 
@@ -226,7 +226,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     }
   }
 
-  render_title(status: string) {
+  render_title(status: string): React.ReactNode {
     let title = 'Music Markup Editor' + status;
     return (
       <Helmet>
@@ -235,7 +235,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     );
   }
 
-  render_toolbar() {
+  render_toolbar(): React.ReactNode {
     return (
       <>
         <div className="toolbar">
@@ -288,7 +288,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     );
   }
 
-  render_filter_bars_dialog() {
+  render_filter_bars_dialog(): React.ReactNode {
     const on_submit = () => {
       const start = parseInt(this.ref_filter_start.current.value);
       const freq = parseInt(this.ref_filter_freq.current.value);
@@ -333,7 +333,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     );
   }
 
-  render_progress_window() {
+  render_progress_window(): React.ReactNode {
     return (
       <Modal show={true} backdrop="static" keyboard={false} centered>
         <Modal.Header >
@@ -346,7 +346,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     );
   }
 
-  render() {
+  render(): React.ReactNode {
     if (!this.state.mp3_url || !this.state.bars) {
       return (
         <div>
