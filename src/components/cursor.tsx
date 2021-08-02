@@ -1,10 +1,13 @@
 import React from 'react';
 
+import Bars from './bars';
+
 
 interface CursorProps {
   logical_width: number;
   duration: number;
   audio?: HTMLAudioElement;
+  bars: number[];
 }
 
 interface CursorState {
@@ -73,7 +76,11 @@ export default class Cursor extends React.Component<CursorProps, CursorState> {
     const pos = this.props.logical_width * this.state.time / this.props.duration;
 
     return (
-      <line className="cursor" y1={0} y2={10000} x1={pos} x2={pos} />
+      <>
+        <line className="cursor" y1={0} y2={10000} x1={pos} x2={pos} />
+        <Bars bars={this.props.bars} logical_width={this.props.logical_width}
+          duration={this.props.duration} / >
+      </>
     );
   }
 }

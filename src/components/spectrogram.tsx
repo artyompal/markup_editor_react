@@ -65,28 +65,11 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
           <svg className="svg-block" width={w} onDoubleClick={(e) => this.on_double_click(e)}>
             <image href={this.props.spectrum_url} preserveAspectRatio="none"
               x={0} y={0} width={w} height={h} />
-            { this.render_bars() }
-            <Cursor logical_width={w} duration={this.props.duration} audio={this.props.audio} />
+            <Cursor logical_width={w} duration={this.props.duration} audio={this.props.audio}
+              bars={this.props.bars} />
           </svg>
         </div>
       </div>
     );
-  }
-
-  render_bars(): React.ReactNode {
-    if (!this.props.bars) {
-      return null;
-    }
-
-    return this.props.bars.map((coord, idx) => {
-      if (coord < 0 || coord >= this.props.duration) {
-        return null;
-      }
-
-      const x = coord * this.props.width * this.state.scale  / this.props.duration;
-      return (
-        <line className="mark" key={idx} x1={x} x2={x} y1={0} y2={10000} />
-      );
-    });
   }
 }
