@@ -237,7 +237,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   render_toolbar(): React.ReactNode {
     return (
-      <>
+      <div>
         <div className="toolbar">
           <Tooltip title="Regenerate default bars">
             <IconButton aria-label="Create file" disableRipple={true} onClick={this.create_new}>
@@ -284,7 +284,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
             </IconButton>
           </Tooltip>
         </div>
-      </>
+      </div>
     );
   }
 

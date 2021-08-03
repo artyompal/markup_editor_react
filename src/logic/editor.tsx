@@ -151,3 +151,10 @@ export function remove_bar(time: number): DocumentState {
   history_push({ bars });
   return document_state;
 }
+
+export function replace_bar(location: number, time: number): DocumentState {
+  let bars = document_state.bars;
+  bars = [...bars.slice(0, location), time, ...bars.slice(location + 1)];
+  history_push({ bars });
+  return document_state;
+}

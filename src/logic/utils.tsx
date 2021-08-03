@@ -37,3 +37,11 @@ export function find_closest(arr: number[], val: number): number | undefined {
     return (val - arr[idx - 1] < arr[idx] - val) ? idx - 1 : idx;
   }
 }
+
+export function event2time(holder: any, e: any, logical_width: number, duration: number): number {
+  const rect = holder.current.getBoundingClientRect();
+  return (holder.current.scrollLeft + e.clientX - rect.left) /
+         logical_width * duration;
+}
+
+    // @ts-ignore

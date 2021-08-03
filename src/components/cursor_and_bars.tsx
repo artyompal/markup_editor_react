@@ -9,6 +9,7 @@ interface CursorAndBarsProps {
   duration: number;
   audio?: HTMLAudioElement;
   bars: number[];
+  holder: React.RefObject<any>;
 }
 
 interface CursorAndBarsState {
@@ -85,7 +86,8 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
       <>
         <line className="cursor" y1={0} y2={10000} x1={pos} x2={pos} />
         <Bars bars={this.props.bars} logical_width={this.props.logical_width}
-          duration={this.props.duration} active_bar={this.state.active_bar} />
+          duration={this.props.duration} active_bar={this.state.active_bar}
+          holder={this.props.holder} />
       </>
     );
   }
