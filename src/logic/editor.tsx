@@ -148,8 +148,9 @@ export function remove_bar(time: number): DocumentState {
   return history_push({ bars });
 }
 
-export function replace_bar(location: number, time: number): DocumentState {
+export function replace_bar(location: number, time: number, move_all: boolean): DocumentState {
   let bars = document_state.bars;
-  bars = [...bars.slice(0, location), time, ...bars.slice(location + 1)];
+  let modify = (x: number): number => { return (move_all) ? time - bars[location] + x : x; };
+  bars = [...bars.slice(0, location), time, ...bars.slice(location + 1).map(modify)];
   return history_push({ bars });
 }

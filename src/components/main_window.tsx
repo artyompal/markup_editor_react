@@ -226,8 +226,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     }
   }
 
-  replace_bar = (bar: number, coord: number): void => {
-    this.setState(editor.replace_bar(bar, coord));
+  replace_bar = (bar: number, coord: number, move_all: boolean): void => {
+    this.setState(editor.replace_bar(bar, coord, move_all));
   }
 
   render_title(status: string): React.ReactNode {
