@@ -56,12 +56,8 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
   }
 
   on_play = (): void => {
-    const redraw = (): void => { // @ts-ignore
-      const time = this.props.audio.currentTime;
-      const active_bar = utils.find_closest(this.props.bars, time);
-
-      // @ts-ignore
-      this.setState({ time, active_bar });
+    const redraw = (): void => {
+      this.on_seek();
       this.raf_handle = window.requestAnimationFrame(redraw);
     }
 
@@ -75,8 +71,11 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
   }
 
   on_seek = (): void => {
-    // @ts-ignore
-    this.setState({ time: this.props.audio.currentTime });
+    if (this.props.audio) {
+      const time = this.props.audio.currentTime;
+      const active_bar = utils.find_closest(this.props.bars, time); // @ts-ignore
+      this.setState({ time, active_bar });
+    }
   }
 
   render(): React.ReactNode {

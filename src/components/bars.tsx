@@ -14,14 +14,14 @@ interface BarsProps {
 }
 
 interface BarsState {
-  dragged_bar: number;
+  dragged_bar?: number;
   drag_pos: number;
 };
 
 export default class Bars extends React.Component<BarsProps, BarsState> {
   constructor(props: BarsProps) {
     super(props);
-    this.state = { dragged_bar: -1, drag_pos: 0 };
+    this.state = { dragged_bar: undefined, drag_pos: 0 };
 
     interact('.bar')
       .draggable({
@@ -34,11 +34,6 @@ export default class Bars extends React.Component<BarsProps, BarsState> {
   on_drag_start = (e: React.SyntheticEvent): void => {
     const coord = event2time(this.props.holder, e, this.props.logical_width, this.props.duration);
     const idx = find_closest(this.props.bars, coord);
-
-    if (idx == undefined) {
-      return;
-    }
-
     this.setState({ dragged_bar: idx });
   }
 
@@ -48,9 +43,11 @@ export default class Bars extends React.Component<BarsProps, BarsState> {
   }
 
   on_drag_end = (e: React.SyntheticEvent): void => {
-    const coord = event2time(this.props.holder, e, this.props.logical_width, this.props.duration);
-    this.props.main_win.replace_bar(this.state.dragged_bar, coord);
-    this.setState({ dragged_bar: 1 });
+    if (this.state.dragged_bar !== undefined) {
+      const coord = event2time(this.props.holder, e, this.props.logical_width, this.props.duration);
+      this.props.main_win.replace_bar(this.state.dragged_bar, coord);
+      this.setState({ dragged_bar: undefined });
+    }
   }
 
   render(): React.ReactNode {
