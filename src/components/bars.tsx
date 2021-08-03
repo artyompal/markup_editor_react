@@ -3,14 +3,15 @@ import interact from 'interactjs'
 
 import {event2time, find_closest} from '../logic/utils';
 import MainWindow from './main_window';
+import * as utils from '../logic/utils';
 
 interface BarsProps {
   bars: number[];
   logical_width: number;
   duration: number;
-  active_bar: number;
   holder: React.RefObject<any>;
   main_win: MainWindow;
+  time: number;
 }
 
 interface BarsState {
@@ -51,6 +52,7 @@ export default class Bars extends React.Component<BarsProps, BarsState> {
   }
 
   render(): React.ReactNode {
+    const active_bar = utils.find_closest(this.props.bars, this.props.time);
     return this.props.bars.map((coord, idx) => {
       if (coord < 0 || coord >= this.props.duration) {
         return null;
@@ -62,7 +64,7 @@ export default class Bars extends React.Component<BarsProps, BarsState> {
       if (idx == this.state.dragged_bar) {
         class_name += ' dragged-bar';
         x = this.state.drag_pos * this.props.logical_width / this.props.duration;
-      } else if (idx == this.props.active_bar) {
+      } else if (idx == active_bar) {
         class_name += ' active-bar';
       } else {
         class_name += ' normal-bar';
