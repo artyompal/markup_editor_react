@@ -2,7 +2,7 @@ import React from 'react';
 import interact from 'interactjs'
 
 import {event2time, find_closest} from '../logic/utils';
-import * as editor from '../logic/editor';
+import MainWindow from './main_window';
 
 interface BarsProps {
   bars: number[];
@@ -10,10 +10,10 @@ interface BarsProps {
   duration: number;
   active_bar: number;
   holder: React.RefObject<any>;
+  main_win: MainWindow;
 }
 
 interface BarsState {
-  bars: number[];
   dragged_bar: number;
   drag_pos: number;
 };
@@ -21,7 +21,7 @@ interface BarsState {
 export default class Bars extends React.Component<BarsProps, BarsState> {
   constructor(props: BarsProps) {
     super(props);
-    this.state = { bars: props.bars, dragged_bar: -1, drag_pos: 0 };
+    this.state = { dragged_bar: -1, drag_pos: 0 };
 
     interact('.bar')
       .draggable({
@@ -49,15 +49,12 @@ export default class Bars extends React.Component<BarsProps, BarsState> {
 
   on_drag_end = (e: React.SyntheticEvent): void => {
     const coord = event2time(this.props.holder, e, this.props.logical_width, this.props.duration);
-
-    // @ts-ignore
-    let new_state: BarsState = editor.replace_bar(this.state.dragged_bar, coord);
-    new_state.dragged_bar = -1;
-    this.setState(new_state);
+    this.props.main_win.replace_bar(this.state.dragged_bar, coord);
+    this.setState({ dragged_bar: 1 });
   }
 
   render(): React.ReactNode {
-    return this.state.bars.map((coord, idx) => {
+    return this.props.bars.map((coord, idx) => {
       if (coord < 0 || coord >= this.props.duration) {
         return null;
       }

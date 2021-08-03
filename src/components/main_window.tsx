@@ -226,6 +226,10 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     }
   }
 
+  replace_bar = (bar: number, coord: number): void => {
+    this.setState(editor.replace_bar(bar, coord));
+  }
+
   render_title(status: string): React.ReactNode {
     let title = 'Music Markup Editor' + status;
     return (
@@ -364,7 +368,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
             spectrum_url={this.state.spectrum_url} bars={this.state.bars}
             duration={this.state.duration} main_window={this}
             audio={this.player.current ? this.player.current.audio.current : null}
-            width={this.state.spectrum_width} height={this.state.spectrum_height} />
+            width={this.state.spectrum_width} height={this.state.spectrum_height}
+            main_win={this} />
           <AudioPlayer
             className="player" autoPlayAfterSrcChange={false}
             src={this.state.mp3_url} ref={this.player}

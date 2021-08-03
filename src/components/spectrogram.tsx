@@ -2,11 +2,11 @@ import React from 'react';
 
 import CursorAndBars from './cursor_and_bars';
 import {event2time} from '../logic/utils';
+import MainWindow from './main_window';
 
 const SCALE_STEP = 0.5;
 const MIN_SCALE = 1.0;
 const MAX_SCALE = 50.0;
-
 
 interface SpectrogramProps {
   spectrum_url: string;
@@ -16,6 +16,7 @@ interface SpectrogramProps {
   width: number;
   height: number;
   audio?: HTMLAudioElement;
+  main_win: MainWindow;
 }
 
 interface SpectrogramState {
@@ -61,7 +62,7 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
             <image href={this.props.spectrum_url} preserveAspectRatio="none"
              x={0} y={0} width={w} height={h} />
             <CursorAndBars logical_width={w} duration={this.props.duration} audio={this.props.audio}
-             bars={this.props.bars} holder={this.holder} />
+             bars={this.props.bars} holder={this.holder} main_win={this.props.main_win} />
           </svg>
         </div>
       </div>

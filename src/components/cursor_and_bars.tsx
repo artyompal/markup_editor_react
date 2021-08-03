@@ -2,7 +2,7 @@ import React from 'react';
 
 import Bars from './bars';
 import * as utils from '../logic/utils';
-
+import MainWindow from './main_window';
 
 interface CursorAndBarsProps {
   logical_width: number;
@@ -10,13 +10,13 @@ interface CursorAndBarsProps {
   audio?: HTMLAudioElement;
   bars: number[];
   holder: React.RefObject<any>;
+  main_win: MainWindow;
 }
 
 interface CursorAndBarsState {
   time: number;
   active_bar: number;
 }
-
 
 export default class CursorAndBars extends React.Component<CursorAndBarsProps, CursorAndBarsState> {
   raf_handle?: number;
@@ -81,13 +81,12 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
 
   render(): React.ReactNode {
     const pos = this.props.logical_width * this.state.time / this.props.duration;
-
     return (
       <>
         <line className="cursor" y1={0} y2={10000} x1={pos} x2={pos} />
         <Bars bars={this.props.bars} logical_width={this.props.logical_width}
           duration={this.props.duration} active_bar={this.state.active_bar}
-          holder={this.props.holder} />
+          holder={this.props.holder} main_win={this.props.main_win} />
       </>
     );
   }

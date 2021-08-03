@@ -79,11 +79,12 @@ function history_reset(): void {
   history_step = 0;
 }
 
-function history_push(new_state: DocumentState): void {
+function history_push(new_state: DocumentState): DocumentState {
   document_state = new_state;
   history.length = history_step + 1;
   history.push(document_state);
   history_step += 1;
+  return document_state;
 }
 
 export function can_undo(): boolean {
@@ -120,8 +121,7 @@ export function filter_bars(start: number, divider: number): DocumentState {
     bars.push(document_state.bars[idx]);
   }
 
-  history_push({ bars });
-  return document_state;
+  return history_push({ bars });
 }
 
 export function add_bar(time: number): DocumentState {
@@ -133,9 +133,7 @@ export function add_bar(time: number): DocumentState {
   }
 
   bars = [...bars.slice(0, location), time, ...bars.slice(location)];
-
-  history_push({ bars });
-  return document_state;
+  return history_push({ bars });
 }
 
 export function remove_bar(time: number): DocumentState {
@@ -147,14 +145,11 @@ export function remove_bar(time: number): DocumentState {
   }
 
   bars = [...bars.slice(0, location), ...bars.slice(location + 1)];
-
-  history_push({ bars });
-  return document_state;
+  return history_push({ bars });
 }
 
 export function replace_bar(location: number, time: number): DocumentState {
   let bars = document_state.bars;
   bars = [...bars.slice(0, location), time, ...bars.slice(location + 1)];
-  history_push({ bars });
-  return document_state;
+  return history_push({ bars });
 }
