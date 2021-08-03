@@ -257,14 +257,16 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
         <div className="toolbar">
           <Tooltip title="Undo">
             <span>
-              <IconButton aria-label="Undo" disableRipple={true} disabled={!editor.can_undo()}>
+              <IconButton aria-label="Undo" disableRipple={true} disabled={!editor.can_undo()}
+                onClick={() => {this.setState(editor.undo())}} >
                 <UndoIcon />
               </IconButton>
             </span>
           </Tooltip>
           <Tooltip title="Redo">
             <span>
-              <IconButton aria-label="Redo" disableRipple={true} disabled={!editor.can_redo()}>
+              <IconButton aria-label="Redo" disableRipple={true} disabled={!editor.can_redo()}
+                onClick={() => {this.setState(editor.redo())}} >
                 <RedoIcon />
               </IconButton>
             </span>
