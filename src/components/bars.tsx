@@ -60,10 +60,12 @@ export default class Bars extends React.Component<BarsProps, BarsState> {
       let class_name = 'bar';
 
       if (idx == this.state.dragged_bar) {
-        class_name = 'dragged-bar';
+        class_name += ' dragged-bar';
         x = this.state.drag_pos * this.props.logical_width / this.props.duration;
       } else if (idx == this.props.active_bar) {
-        class_name = 'active-bar';
+        class_name += ' active-bar';
+      } else {
+        class_name += ' normal-bar';
       }
 
       return (

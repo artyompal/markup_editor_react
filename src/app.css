@@ -48,7 +48,7 @@ image {
   shape-rendering: auto;
 }
 
-.bar {
+.normal-bar {
   fill: none;
   stroke: black;
   stroke-width: 2;
