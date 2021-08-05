@@ -8,6 +8,7 @@ import {MP3_BASE_PATH, RESULTS_PATH} from '../logic/settings';
 
 const VERSION = 1;
 const AUTOSAVE_TIMEOUT = 5000;
+const EXTENSION = '.markup.json'
 
 interface DocumentState {
   bars: number[];
@@ -34,12 +35,12 @@ function get_document_path(file_path: string, suffix: string): string {
 
 
 export function have_file(mp3_path: string): boolean {
-  return fs.existsSync(get_document_path(mp3_path, '.markup.json'));
+  return fs.existsSync(get_document_path(mp3_path, EXTENSION));
 }
 
 export function create_file(mp3_path: string, bars: number[],
                             autosave: boolean = true): DocumentState {
-  document_path = get_document_path(mp3_path, '.markup.json');
+  document_path = get_document_path(mp3_path, EXTENSION);
   document_state = { bars };
   history_reset();
 
@@ -51,7 +52,7 @@ export function create_file(mp3_path: string, bars: number[],
 }
 
 export function open_file(mp3_path: string): DocumentState {
-  document_path = get_document_path(mp3_path, '.markup.json');
+  document_path = get_document_path(mp3_path, EXTENSION);
   const json = JSON.parse(fs.readFileSync(document_path).toString());
   document_state = { bars: json.bars };
   history_reset();
