@@ -62,7 +62,13 @@ export function open_file(mp3_path: string): DocumentState {
 
 function save_file(): void {
   const data = { version: VERSION, bars: document_state.bars };
-  fs.writeFileSync(document_path, JSON.stringify(data));
+  const dir_path = path.dirname(document_path);
+
+  if (!fs.existsSync(dir_path)) {
+    fs.mkdirSync(dir_path, {recursive: true});
+  }
+
+  fs.writeFile(document_path, JSON.stringify(data), () => {});
 
   if (autosave_timeout_id !== undefined) {
     window.clearTimeout(autosave_timeout_id);

@@ -113,6 +113,10 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
         load_spectrogram();
       } else {
         console.error('spectrogram generator returned an error', code);
+        console.error('stderr');
+        console.error(child.stderr.read().toString());
+        console.error('stdout');
+        console.error(child.stdout.read().toString());
       }
     });
   }
@@ -146,6 +150,10 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
         });
       } else {
         console.error('beat detector returned an error', code);
+        console.error('stderr');
+        console.error(child.stderr.read().toString());
+        console.error('stdout');
+        console.error(child.stdout.read().toString());
       }
     });
   }
