@@ -8,7 +8,7 @@ describe('undo/redo', () => {
   });
 
   it('undo should work properly', () => {
-    let res = editor.create_file('package.json', [1, 2, 3, 4, 5]);
+    let res = editor.create_file('package.json', [1, 2, 3, 4, 5], false);
     expect(res).toStrictEqual({ bars: [1, 2, 3, 4, 5] });
 
     expect(editor.can_undo()).toBeFalsy();
@@ -32,5 +32,4 @@ describe('undo/redo', () => {
     expect(editor.can_undo()).toBeTruthy();
     expect(editor.can_redo()).toBeFalsy();
   });
-
 });

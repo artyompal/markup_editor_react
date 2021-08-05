@@ -37,11 +37,16 @@ export function have_file(mp3_path: string): boolean {
   return fs.existsSync(get_document_path(mp3_path, '.markup.json'));
 }
 
-export function create_file(mp3_path: string, bars: number[]): DocumentState {
+export function create_file(mp3_path: string, bars: number[],
+                            autosave: boolean = true): DocumentState {
   document_path = get_document_path(mp3_path, '.markup.json');
   document_state = { bars };
   history_reset();
-  save_file();
+
+  if (autosave) {
+    save_file();
+  }
+
   return document_state;
 }
 
