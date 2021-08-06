@@ -11,10 +11,6 @@ from typing import *
 def replace_ext(path: str, new_extension: str) -> str:
     return os.path.splitext(path)[0] + new_extension
 
-def get_musescore_out_names(path: str) -> Tuple[str, str]:
-    name, ext = os.path.splitext(path)
-    return name + '-1' + ext, name + '-2' + ext
-
 def select_measure(src: Any, image_path_fmt: str) -> None:
     dst = xmltree.Element('score-partwise')
     dst.append(src.find('identification'))
@@ -40,7 +36,9 @@ def select_measure(src: Any, image_path_fmt: str) -> None:
 
         measure_img_path = image_path_fmt % measure_idx
         measure_xml_path = replace_ext(measure_img_path, '.xml')
-        out_path_1, out_path_2 = get_musescore_out_names(measure_img_path)
+
+        path, ext = os.path.splitext(measure_img_path)
+        out_path = path + '-1' + ext
 
         if os.path.exists(measure_img_path):
             continue
@@ -55,10 +53,12 @@ def select_measure(src: Any, image_path_fmt: str) -> None:
             print('error while converting to PNG')
             return
 
-        os.rename(out_path_1, measure_img_path)
+        os.rename(out_path, measure_img_path)
+        extra_idx = 2
 
-        if os.path.exists(out_path_2):
-            os.unlink(out_path_2)
+        while os.path.exists(path + str(-extra_idx) + ext):
+            os.unlink(path + str(-extra_idx) + ext)
+            extra_idx += 1
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
