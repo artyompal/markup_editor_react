@@ -9,8 +9,7 @@ body {
 
 .svg-outer-holder {
   position: relative;
-  height: 100%;
-  width: 100%;
+  width: 70vw;
   padding: 0;
   padding-bottom: 100%;
 }
@@ -125,3 +124,17 @@ th {
   padding-right: 15px;
   display: inline-block;
 }
+
+.scores {
+  position: absolute;
+  width: 30vw;
+  top: 0;
+  right: 0;
+  user-select: none;
+  text-align: center;
+}
+
+img {
+  width: 30vw;
+}
+

@@ -47,6 +47,7 @@ interface MainWindowState {
   spectrum_height: number;
   artist: string;
   song_name: string;
+  cur_measure: number;
 }
 
 export default class MainWindow extends React.Component<MainWindowProps, MainWindowState> {
@@ -55,12 +56,14 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   ref_filter_start: any;
   ref_filter_freq: any;
   num_processes: number;
+  cur_measure: number = 1;
+  scores_wildcard: string = '';
 
   constructor(props: MainWindowProps) {
     super(props);
     this.state = {mp3_url: '', spectrum_url: '', bars: [],
       duration: 0, show_filter_dialog: false,
-      spectrum_width: 0, spectrum_height: 0, artist: '', song_name: ''};
+      spectrum_width: 0, spectrum_height: 0, artist: '', song_name: '', cur_measure: 1};
 
     this.player = React.createRef();
     this.ref_filter_start = React.createRef();
@@ -131,10 +134,10 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   }
 
   launch_scores_renderer(tab_path: string): void {
-    const scores_wildcard = this.get_scores_wildcard(tab_path);
-    console.log('running scores generator for', tab_path, scores_wildcard);
+    this.scores_wildcard = this.get_scores_wildcard(tab_path);
+    console.log('running scores generator for', tab_path, this.scores_wildcard);
     const child = child_process.spawn('python',
-                                      ['scores_worker.py', scores_wildcard, tab_path],
+                                      ['scores_worker.py', this.scores_wildcard, tab_path],
                                       {cwd: 'src/python'});
 
     child.on('exit', (code: number) => {
@@ -148,6 +151,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
         console.error(this.safe_tostring(child.stdout.read()));
       }
     });
+
+    this.seek_to_measure(0);
   }
 
   generate_beats(mp3_path: string, handler: (bars: number[]) => any): void {
@@ -265,6 +270,13 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   replace_bar = (bar: number, coord: number, move_all: boolean): void => {
     this.setState(editor.replace_bar(bar, coord, move_all));
+  }
+
+  seek_to_measure = (measure: number): void => {
+    if (this.cur_measure != measure) {
+      this.cur_measure = measure;
+      this.setState({ cur_measure: measure });
+    }
   }
 
   render_title(status: string): React.ReactNode {
@@ -390,11 +402,15 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   }
 
   render_score(): React.ReactNode {
-      // <img src="file:///media/cppg/de8446a3-ae1a-4db7-b5aa-8d55da9cd4e3/guitar/MusicXML/measure1-1.png" />
-    return null;
-    // return (
-    //   <img src="file:///home/cppg/dev/guitartabs/markup_editor_react/src/logic/test_measure_1-1.png" />
-    // );
+    const image_path = this.scores_wildcard.replace('%d', this.state.cur_measure.toString());
+    // console.log('trying to render', image_path, fs.existsSync(image_path));
+
+    return (
+      <div className="scores">
+        <span>{`Measure ${this.state.cur_measure}`}</span><br/>
+        {(fs.existsSync(image_path)) ? (<img src={'file://' + image_path} />) : null}
+      </div>
+    );
   }
 
   render(): React.ReactNode {

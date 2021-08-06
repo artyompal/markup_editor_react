@@ -3,6 +3,9 @@ import React from 'react';
 import Bars from './bars';
 import MainWindow from './main_window';
 
+import { lower_bound } from '../logic/utils';
+
+
 interface CursorAndBarsProps {
   logical_width: number;
   duration: number;
@@ -72,6 +75,9 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
     if (this.props.audio) {
       const time = this.props.audio.currentTime;
       this.setState({ time });
+
+      const measure = lower_bound(this.props.bars, time) + 1;
+      this.props.main_win.seek_to_measure(measure);
     }
   }
 
