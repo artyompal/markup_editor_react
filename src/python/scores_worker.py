@@ -1,9 +1,10 @@
-
+""" This file run in the background and renders each measure into a standalone PGN file. """
 import argparse
 import os
 import subprocess
 import xml.etree.ElementTree as xmltree
 
+from zipfile import ZipFile
 from typing import *
 
 
@@ -65,7 +66,18 @@ if __name__ == '__main__':
     parser.add_argument('scorefile', help='path to the scores (input parameter)')
     args = parser.parse_args()
 
-    tree = xmltree.parse(args.scorefile)
-    root = tree.getroot()
+    print('creating', os.path.dirname(args.imagefile))
+    os.makedirs(os.path.dirname(args.imagefile), exist_ok=True)
+
+    if os.path.exists(args.scorefile):
+        tree = xmltree.parse(args.scorefile)
+        root = tree.getroot()
+    else:
+        with ZipFile('/mnt/data/guitar/musicxml.zip') as zf:
+            prefix = '/mnt/data/guitar/'
+            assert args.scorefile.startswith(prefix)
+
+            with zf.open(args.scorefile[len(prefix):]) as f:
+                root = xmltree.fromstring(f.read())
 
     select_measure(root, args.imagefile)

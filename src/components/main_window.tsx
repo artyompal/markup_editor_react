@@ -86,6 +86,11 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   safe_tostring = (s: any): string => { return (s ? s.toString() : '') }
 
+  get_scores_wildcard(file_path: string): string {
+    return path.join(CACHE_PATH, 'scores', file_path + '-%d.png');
+  }
+
+
   generate_spectrogram(mp3_path: string): void {
     const load_spectrogram = (): void => {
       console.log('loading spectrogram', spectrum_path);
@@ -105,17 +110,38 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
     console.log('generating spectrogram for', mp3_path);
 
-    const child = child_process.spawn('python', ['gen_spectrogram.py', spectrum_path, mp3_path],
-      {cwd: 'src/python'});
+    const child = child_process.spawn('python',
+                                      ['gen_spectrogram.py', spectrum_path, mp3_path],
+                                      {cwd: 'src/python'});
     this.num_processes++;
 
     child.on('exit', (code: number) => {
       this.num_processes--;
 
-      if (code == 0) {
+      if (code === 0) {
         load_spectrogram();
       } else {
         console.error('spectrogram generator returned an error', code);
+        console.error('stderr');
+        console.error(this.safe_tostring(child.stderr.read()));
+        console.error('stdout');
+        console.error(this.safe_tostring(child.stdout.read()));
+      }
+    });
+  }
+
+  launch_scores_renderer(tab_path: string): void {
+    const scores_wildcard = this.get_scores_wildcard(tab_path);
+    console.log('running scores generator for', tab_path, scores_wildcard);
+    const child = child_process.spawn('python',
+                                      ['scores_worker.py', scores_wildcard, tab_path],
+                                      {cwd: 'src/python'});
+
+    child.on('exit', (code: number) => {
+      console.log('scores generator exited');
+
+      if (code !== 0) {
+        console.error('score renderer generator returned an error', code);
         console.error('stderr');
         console.error(this.safe_tostring(child.stderr.read()));
         console.error('stdout');
@@ -167,10 +193,10 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     });
   }
 
-  // @ts-ignore
   open_file(artist: string, song_name: string, mp3_path: string, tab_path: string): void {
     this.mp3_path = mp3_path;
     this.generate_spectrogram(mp3_path);
+    this.launch_scores_renderer(tab_path);
 
     if (editor.have_file(mp3_path)) {
       this.setState(editor.open_file(mp3_path));
@@ -363,6 +389,14 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     );
   }
 
+  render_score(): React.ReactNode {
+      // <img src="file:///media/cppg/de8446a3-ae1a-4db7-b5aa-8d55da9cd4e3/guitar/MusicXML/measure1-1.png" />
+    return null;
+    // return (
+    //   <img src="file:///home/cppg/dev/guitartabs/markup_editor_react/src/logic/test_measure_1-1.png" />
+    // );
+  }
+
   render(): React.ReactNode {
     if (!this.state.mp3_url || !this.state.bars) {
       return (
@@ -383,6 +417,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
             audio={this.player.current ? this.player.current.audio.current : null}
             width={this.state.spectrum_width} height={this.state.spectrum_height}
             main_win={this} />
+          {this.render_score()}
           <AudioPlayer
             className="player" autoPlayAfterSrcChange={false}
             src={this.state.mp3_url} ref={this.player}
