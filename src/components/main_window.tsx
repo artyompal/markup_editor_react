@@ -84,6 +84,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     return path.join(CACHE_PATH, file_path + suffix);
   }
 
+  safe_tostring = (s: any): string => { return (s ? s.toString() : '') }
+
   generate_spectrogram(mp3_path: string): void {
     const load_spectrogram = (): void => {
       console.log('loading spectrogram', spectrum_path);
@@ -102,8 +104,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     }
 
     console.log('generating spectrogram for', mp3_path);
+
     const child = child_process.spawn('python', ['gen_spectrogram.py', spectrum_path, mp3_path],
-      {cwd: '../ml_auto_scores/'});
+      {cwd: 'src/python'});
     this.num_processes++;
 
     child.on('exit', (code: number) => {
@@ -114,9 +117,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       } else {
         console.error('spectrogram generator returned an error', code);
         console.error('stderr');
-        console.error(child.stderr.read().toString());
+        console.error(this.safe_tostring(child.stderr.read()));
         console.error('stdout');
-        console.error(child.stdout.read().toString());
+        console.error(this.safe_tostring(child.stdout.read()));
       }
     });
   }
@@ -151,9 +154,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       } else {
         console.error('beat detector returned an error', code);
         console.error('stderr');
-        console.error(child.stderr.read().toString());
+        console.error(this.safe_tostring(child.stderr.read()));
         console.error('stdout');
-        console.error(child.stdout.read().toString());
+        console.error(this.safe_tostring(child.stdout.read()));
       }
     });
   }
