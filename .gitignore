@@ -56,4 +56,4 @@ npm-debug.log.*
 src/node_modules
 
 __pycache__
-
+*.db

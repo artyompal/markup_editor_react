@@ -15,6 +15,7 @@ import RedoIcon from '@material-ui/icons/Redo';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
 
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
@@ -58,6 +59,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   num_processes: number;
   cur_measure: number = 1;
   scores_wildcard: string = '';
+  full_scores: string = '';
 
   constructor(props: MainWindowProps) {
     super(props);
@@ -200,6 +202,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   open_file(artist: string, song_name: string, mp3_path: string, tab_path: string): void {
     this.mp3_path = mp3_path;
+    this.full_scores = tab_path;
+
     this.generate_spectrogram(mp3_path);
     this.launch_scores_renderer(tab_path);
 
@@ -279,6 +283,37 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     }
   }
 
+  open_in_musescore = (): void => {
+    console.log('trying to open', this.full_scores);
+
+    if (fs.existsSync(this.full_scores)) {
+      child_process.spawn('musescore', [this.full_scores]);
+    } else {
+      const rel_path = this.full_scores.substr(this.full_scores.indexOf('MusicXML'));
+      const dst_path = '/tmp/markup_editor/';
+
+      console.log('unzip', '-j', 'data/guitar/musicxml.zip', rel_path, dst_path);
+      const child = child_process.spawn('unzip', ['-o', '-j', 'data/guitar/musicxml.zip',
+                                                  rel_path, '-d', dst_path]);
+
+      child.on('exit', (code: number) => {
+        console.log('unzip exited');
+
+        if (code === 0) {
+          const result_path = path.join(dst_path, path.basename(rel_path));
+          console.log('trying to open', result_path, fs.existsSync(rel_path));
+          child_process.spawn('musescore', [result_path]);
+        } else {
+          console.error('unzip returned an error', code);
+          console.error('stderr');
+          console.error(this.safe_tostring(child.stderr.read()));
+          console.error('stdout');
+          console.error(this.safe_tostring(child.stdout.read()));
+          }
+        });
+    }
+  }
+
   render_title(status: string): React.ReactNode {
     let title = 'Music Markup Editor' + status;
     return (
@@ -336,6 +371,14 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
           <Tooltip title="Remove bar">
             <IconButton aria-label="Remove bar" disableRipple={true} onClick={this.remove_bar}>
               <RemoveIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+        <div className="toolbar">
+          <Tooltip title="Open in MuseScore">
+            <IconButton aria-label="MuseScore" disableRipple={true}
+              onClick={this.open_in_musescore}>
+              <OpenInBrowserIcon />
             </IconButton>
           </Tooltip>
         </div>
