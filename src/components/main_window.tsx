@@ -152,7 +152,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       }
     });
 
-    this.seek_to_measure(0);
+    this.seek_to_measure(1);
   }
 
   generate_beats(mp3_path: string, handler: (bars: number[]) => any): void {

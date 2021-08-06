@@ -76,7 +76,7 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
       const time = this.props.audio.currentTime;
       this.setState({ time });
 
-      const measure = lower_bound(this.props.bars, time) + 1;
+      const measure = lower_bound(this.props.bars, time);
       this.props.main_win.seek_to_measure(measure);
     }
   }
