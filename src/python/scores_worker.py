@@ -11,17 +11,17 @@ from typing import *
 def replace_ext(path: str, new_extension: str) -> str:
     return os.path.splitext(path)[0] + new_extension
 
-def select_measure(src: Any, image_path_fmt: str) -> None:
-    dst = xmltree.Element('score-partwise')
-    dst.append(src.find('identification'))
-    dst.append(src.find('defaults'))
-    dst.append(src.find('part-list'))
-
+def process_all_measures(src: Any, image_path_fmt: str) -> None:
     measure_idx = 0
     stop = False
 
     while not stop:
         measure_idx += 1
+
+        dst = xmltree.Element('score-partwise')
+        dst.append(src.find('identification'))
+        dst.append(src.find('defaults'))
+        dst.append(src.find('part-list'))
 
         for src_part in src.findall('part'):
             dst_part = xmltree.SubElement(dst, 'part', **src_part.attrib)
@@ -80,4 +80,4 @@ if __name__ == '__main__':
             with zf.open(args.scorefile[len(prefix):]) as f:
                 root = xmltree.fromstring(f.read())
 
-    select_measure(root, args.imagefile)
+    process_all_measures(root, args.imagefile)
