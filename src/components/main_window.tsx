@@ -101,8 +101,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       console.log('loading spectrogram', spectrum_path);
       const spectrum_sz = image_size(spectrum_path);
       this.setState({mp3_url: 'file://' + mp3_path,
-                     spectrum_url: 'file://' + spectrum_path, // @ts-ignore
-                     spectrum_width: spectrum_sz.width, // @ts-ignore
+                     spectrum_url: 'file://' + spectrum_path,
+                     spectrum_width: spectrum_sz.width,
                      spectrum_height: spectrum_sz.height});
     }
 
@@ -446,7 +446,6 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   render_score(): React.ReactNode {
     const image_path = this.scores_wildcard.replace('%d', this.state.cur_measure.toString());
-    // console.log('trying to render', image_path, fs.existsSync(image_path));
 
     return (
       <div className="scores">
@@ -470,18 +469,20 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
         <div onKeyDown={this.on_key_down} tabIndex={0}>
           {this.render_title(` | ${this.state.artist} - ${this.state.song_name}`)}
           {this.render_toolbar()}
-          <Spectrogram
-            spectrum_url={this.state.spectrum_url} bars={this.state.bars}
-            duration={this.state.duration} main_window={this}
-            audio={this.player.current ? this.player.current.audio.current : null}
-            width={this.state.spectrum_width} height={this.state.spectrum_height}
-            main_win={this} />
+          <div className="left-pane">
+            <Spectrogram
+              spectrum_url={this.state.spectrum_url} bars={this.state.bars}
+              duration={this.state.duration} main_window={this}
+              audio={this.player.current ? this.player.current.audio.current : null}
+              width={this.state.spectrum_width} height={this.state.spectrum_height}
+              main_win={this} />
+            <AudioPlayer
+              className="player" autoPlayAfterSrcChange={false}
+              src={this.state.mp3_url} ref={this.player}
+              onLoadedData={this.on_loaded_data}
+              />
+          </div>
           {this.render_score()}
-          <AudioPlayer
-            className="player" autoPlayAfterSrcChange={false}
-            src={this.state.mp3_url} ref={this.player}
-            onLoadedData={this.on_loaded_data}
-            />
           {this.state.show_filter_dialog ? this.render_filter_bars_dialog() : null}
         </div>
       );

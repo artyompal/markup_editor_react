@@ -35,8 +35,7 @@ export default class CursorAndBars extends React.Component<CursorAndBarsProps, C
     }
   }
 
-  // @ts-ignore
-  shouldComponentUpdate(next_props: CursorAndBarsProps, next_state: CursorAndBarsState): boolean {
+  shouldComponentUpdate(next_props: CursorAndBarsProps): boolean {
     if (next_props.audio && !this.props.audio) {
       next_props.audio.addEventListener('play', this.on_play);
       next_props.audio.addEventListener('pause', this.on_pause);
