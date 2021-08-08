@@ -43,4 +43,8 @@ export function event2time(holder: any, e: any, logical_width: number, duration:
   return (holder.current.scrollLeft + e.clientX - rect.left) / logical_width * duration;
 }
 
-    // @ts-ignore
+export function coord2time(holder: any, coord: number, logical_width: number,
+                           duration: number): number {
+  return (holder.current.scrollLeft + coord) / logical_width * duration;
+}
+

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CursorAndBars from './cursor_and_bars';
-import {event2time} from '../logic/utils';
+import * as utils from '../logic/utils';
 import MainWindow from './main_window';
 
 const SCALE_STEP = 0.5;
@@ -17,6 +17,7 @@ interface SpectrogramProps {
   height: number;
   audio?: HTMLAudioElement;
   main_win: MainWindow;
+  focus_time: number;
 }
 
 interface SpectrogramState {
@@ -25,6 +26,7 @@ interface SpectrogramState {
 
 export default class Spectrogram extends React.Component<SpectrogramProps, SpectrogramState> {
   holder: React.RefObject<any>;
+  focus_time: number = 0;
 
   constructor(props: SpectrogramProps) {
     super(props);
@@ -43,7 +45,8 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
 
   on_double_click = (e: React.SyntheticEvent): void => {
     e.preventDefault();
-    const time = event2time(this.holder, e, this.props.width*this.state.scale, this.props.duration);
+    const logical_width = this.props.width * this.state.scale;
+    const time = utils.event2time(this.holder, e, logical_width, this.props.duration);
     this.props.main_window.seek(time);
   }
 
@@ -54,6 +57,19 @@ export default class Spectrogram extends React.Component<SpectrogramProps, Spect
 
     const scale = this.state.scale;
     const w = this.props.width * scale, h = this.props.height;
+
+    if (this.holder.current && this.props.focus_time != this.focus_time) {
+      this.focus_time = this.props.focus_time;
+
+      const start = utils.coord2time(this.holder, 0, w, this.props.duration);
+      const end = utils.coord2time(this.holder, this.holder.current.clientWidth, w,
+                                   this.props.duration);
+
+      if (this.focus_time < start || this.focus_time >= end) {
+        const coord = w * this.focus_time / this.props.duration;
+        this.holder.current.scrollLeft = coord;
+      }
+    }
 
     return (
       <div className="svg-outer-holder" onWheel={this.on_wheel} >

@@ -250,7 +250,6 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   on_key_down = (e: React.KeyboardEvent): void => {
     switch (e.key) {
       case ' ':
-        e.preventDefault() // Prevent scrolling page by pressing Space key
         e.stopPropagation();
         this.toggle_playback();
         break;
@@ -279,7 +278,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   seek_to_measure = (measure: number): void => {
     if (this.cur_measure != measure) {
       this.cur_measure = measure;
-      this.setState({ cur_measure: measure });
+      const focus_time = this.state.bars[measure - 1];
+      this.setState({ cur_measure: measure, focus_time });
     }
   }
 
@@ -475,7 +475,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
               duration={this.state.duration} main_window={this}
               audio={this.player.current ? this.player.current.audio.current : null}
               width={this.state.spectrum_width} height={this.state.spectrum_height}
-              main_win={this} />
+              main_win={this} focus_time={this.state.focus_time} />
             <AudioPlayer
               className="player" autoPlayAfterSrcChange={false}
               src={this.state.mp3_url} ref={this.player}
