@@ -23,7 +23,7 @@ interface FileTableState {
 }
 
 export default class FileTable extends React.Component<FileTableProps, FileTableState> {
-  final_status: Map<string, string> = new Map();
+  final_status: Map<string, boolean> = new Map();
 
   constructor(props: FileTableProps) {
     super(props);
@@ -54,9 +54,6 @@ export default class FileTable extends React.Component<FileTableProps, FileTable
   }
 
   render_status(mp3_path: string): React.ReactNode {
-    if (mp3_path.indexOf('blondes') != -1)
-      console.log('render_status', mp3_path, this.final_status.has(mp3_path));
-
     if (!this.final_status.has(mp3_path)) {
       return null;
     } else if (this.final_status.get(mp3_path)) {
