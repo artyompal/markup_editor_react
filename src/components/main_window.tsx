@@ -441,14 +441,14 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
               <Form.Group as={Col}>
                 <Form.Label>Start offset</Form.Label>
                 <Form.Control type="number" placeholder="Enter a number"
-                  ref={this.ref_filter_start}
+                  defaultValue={0} ref={this.ref_filter_start}
                   />
               </Form.Group>
 
               <Form.Group as={Col}>
                 <Form.Label>Frequency</Form.Label>
                 <Form.Control type="number" placeholder="Enter a number"
-                  ref={this.ref_filter_freq} />
+                  defaultValue={1} ref={this.ref_filter_freq} />
               </Form.Group>
             </Row>
           </Form>
@@ -484,7 +484,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
             <Form.Group as={Col}>
               <Form.Label>Start offset</Form.Label>
               <Form.Control type="number" placeholder="Enter a number"
-                ref={this.ref_start_offset} />
+                defaultValue={this.state.start_offset} ref={this.ref_start_offset} />
             </Form.Group>
           </Form>
         </Modal.Body>
