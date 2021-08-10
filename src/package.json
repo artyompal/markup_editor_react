@@ -1,8 +1,8 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "electron-react-boilerplate",
-  "version": "2.3.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "music-markup-editor",
+  "productName": "music-markup-editor",
+  "version": "1.0.0",
+  "description": "Made to aid musical track separation/AMT datasets creation",
   "main": "./main.prod.js",
   "scripts": {
     "electron-rebuild": "node -r ../.erb/scripts/BabelRegister.js ../.erb/scripts/ElectronRebuild.js",

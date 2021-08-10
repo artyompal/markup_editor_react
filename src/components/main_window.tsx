@@ -49,6 +49,7 @@ interface MainWindowState {
   artist: string;
   song_name: string;
   cur_measure: number;
+  focus_time: number;
 }
 
 export default class MainWindow extends React.Component<MainWindowProps, MainWindowState> {
@@ -65,7 +66,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     super(props);
     this.state = {mp3_url: '', spectrum_url: '', bars: [],
       duration: 0, show_filter_dialog: false,
-      spectrum_width: 0, spectrum_height: 0, artist: '', song_name: '', cur_measure: 1};
+      spectrum_width: 0, spectrum_height: 0, artist: '', song_name: '', cur_measure: 1,
+      focus_time: 0};
 
     this.player = React.createRef();
     this.ref_filter_start = React.createRef();
@@ -101,9 +103,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       console.log('loading spectrogram', spectrum_path);
       const spectrum_sz = image_size(spectrum_path);
       this.setState({mp3_url: 'file://' + mp3_path,
-                     spectrum_url: 'file://' + spectrum_path,
-                     spectrum_width: spectrum_sz.width,
-                     spectrum_height: spectrum_sz.height});
+                     spectrum_url: 'file://' + spectrum_path, // @ts-ignore
+                     spectrum_width: spectrum_sz.width, spectrum_height: spectrum_sz.height});
     }
 
     const spectrum_path = this.get_cache_path(mp3_path, '.cqt.png');
