@@ -87,7 +87,7 @@ function save_file(): void {
     fs.mkdirSync(dir_path, {recursive: true});
   }
 
-  fs.writeFile(document_path, JSON.stringify(json, null, 2), () => {});
+  fs.writeFileSync(document_path, JSON.stringify(json, null, 2));
 
   if (autosave_timeout_id !== undefined) {
     window.clearTimeout(autosave_timeout_id);
@@ -188,4 +188,13 @@ export function replace_bar(location: number, time: number, move_all: boolean): 
 
 export function set_start_offset(start_offset: number): DocumentState {
   return history_push({ start_offset });
+}
+
+export function make_final(final: boolean): DocumentState {
+  return history_push({ final });
+}
+
+export function is_final(mp3_path: string): boolean {
+  const doc = JSON.parse(fs.readFileSync(get_document_path(mp3_path)).toString());
+  return (doc.version >= 2) ? doc.data.final : false;
 }

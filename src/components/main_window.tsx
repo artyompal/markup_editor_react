@@ -17,6 +17,8 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
 import KeyboardTabIcon from '@material-ui/icons/KeyboardTab';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
@@ -344,6 +346,23 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
               <CloseIcon />
             </IconButton>
           </Tooltip>
+        </div>
+        <div className="toolbar">
+          {
+            (this.state.final ?
+              (<Tooltip title="Make non-final file">
+                <IconButton aria-label="Make non_final file" disableRipple={true}
+                  onClick={() => { this.setState(editor.make_final(false)) }} >
+                    <CheckBoxOutlineBlankIcon />
+                </IconButton>
+              </Tooltip>) :
+              (<Tooltip title="Make final">
+                <IconButton aria-label="Make final file" disableRipple={true}
+                  onClick={() => { this.setState(editor.make_final(true)) }} >
+                    <CheckBoxIcon />
+                </IconButton>
+              </Tooltip>) )
+          }
         </div>
         <div className="toolbar">
           <Tooltip title="Undo">
