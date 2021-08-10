@@ -16,6 +16,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
+import KeyboardTabIcon from '@material-ui/icons/KeyboardTab';
 
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
@@ -42,8 +43,11 @@ interface MainWindowState {
   mp3_url: string;
   spectrum_url: string;
   bars: number[],
+  final: boolean;
+  start_offset: number;
   duration: number;
   show_filter_dialog: boolean;
+  show_start_offset_dialog: boolean;
   spectrum_width: number;
   spectrum_height: number;
   artist: string;
@@ -57,6 +61,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   player: any;
   ref_filter_start: any;
   ref_filter_freq: any;
+  ref_start_offset: any;
   num_processes: number;
   cur_measure: number = 1;
   scores_wildcard: string = '';
@@ -64,14 +69,15 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   constructor(props: MainWindowProps) {
     super(props);
-    this.state = {mp3_url: '', spectrum_url: '', bars: [],
-      duration: 0, show_filter_dialog: false,
+    this.state = {mp3_url: '', spectrum_url: '', bars: [], final: false, start_offset: 0,
+      duration: 0, show_filter_dialog: false, show_start_offset_dialog: false,
       spectrum_width: 0, spectrum_height: 0, artist: '', song_name: '', cur_measure: 1,
       focus_time: 0};
 
     this.player = React.createRef();
     this.ref_filter_start = React.createRef();
     this.ref_filter_freq = React.createRef();
+    this.ref_start_offset = React.createRef();
     this.num_processes = 0;
   }
 
@@ -364,6 +370,12 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
               <FilterListIcon />
             </IconButton>
           </Tooltip>
+          <Tooltip title="Set start offset">
+            <IconButton aria-label="Filter" disableRipple={true}
+              onClick={() => {this.setState({show_start_offset_dialog: true})}}>
+              <KeyboardTabIcon className="icon-mirrored" />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Add bar">
             <IconButton aria-label="Add bar" disableRipple={true} onClick={this.add_bar}>
               <AddIcon />
@@ -432,6 +444,41 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     );
   }
 
+  render_start_offset_dialog(): React.ReactNode {
+    const on_submit = () => {
+      const offset = parseInt(this.ref_start_offset.current.value);
+
+      this.setState({
+        ...editor.set_start_offset(offset),
+        show_start_offset_dialog: false,
+      });
+    }
+
+    return (
+      <Modal show={true} centered onHide={() => {
+        this.setState({show_start_offset_dialog: false})}} >
+        <Modal.Header>
+          <Modal.Title>Start Offset - please enter new offset:</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={() => on_submit()}>
+            <Form.Group as={Col}>
+              <Form.Label>Start offset</Form.Label>
+              <Form.Control type="number" placeholder="Enter a number"
+                ref={this.ref_start_offset} />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+            <Button variant="primary" onClick={on_submit}>OK</Button>
+            <Button variant="secondary"
+              onClick={() => {this.setState({show_start_offset_dialog: false})}}
+              >Cancel</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
   render_progress_window(): React.ReactNode {
     return (
       <Modal show={true} backdrop="static" keyboard={false} centered>
@@ -445,8 +492,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     );
   }
 
-  render_score(): React.ReactNode {
-    const image_path = this.scores_wildcard.replace('%d', this.state.cur_measure.toString());
+  render_scores(): React.ReactNode {
+    const measure_idx = this.state.start_offset + this.state.cur_measure;
+    const image_path = this.scores_wildcard.replace('%d', measure_idx.toString());
 
     return (
       <div className="scores">
@@ -483,8 +531,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
               onLoadedData={this.on_loaded_data}
               />
           </div>
-          {this.render_score()}
+          {this.render_scores()}
           {this.state.show_filter_dialog ? this.render_filter_bars_dialog() : null}
+          {this.state.show_start_offset_dialog ? this.render_start_offset_dialog() : null}
         </div>
       );
     }

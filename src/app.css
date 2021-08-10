@@ -121,6 +121,10 @@ th {
   transform: scale(1.8);
 }
 
+.icon-mirrored {
+  transform: scale(-1.8, 1.8);
+}
+
 .toolbar {
   margin: 0;
   padding: 5px;

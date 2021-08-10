@@ -5,18 +5,26 @@ import * as utils from './utils';
 import * as settings from '../logic/settings';
 
 
-const VERSION = 1;
+const VERSION = 2;
 const AUTOSAVE_TIMEOUT = 5000;
 const EXTENSION = '.markup.json'
 
 interface DocumentState {
   bars: number[];
+  final: boolean;
+  start_offset: number;
 }
 
 let history: Readonly<DocumentState>[] = [];
 let history_step = 0;
 
-let document_state: Readonly<DocumentState> = { bars: [] };
+const DEFAULT_STATE: Readonly<DocumentState> = {
+  bars: [],
+  final: false,
+  start_offset: 0
+};
+
+let document_state: Readonly<DocumentState> = Object.assign({}, DEFAULT_STATE);
 let document_path = '';
 
 let autosave_timeout_id: number | undefined;
@@ -46,7 +54,7 @@ export function have_file(mp3_path: string): boolean {
 export function create_file(mp3_path: string, bars: number[],
                             autosave: boolean = true): DocumentState {
   document_path = get_document_path(mp3_path);
-  document_state = { bars };
+  document_state = { ...DEFAULT_STATE, bars };
   history_reset();
 
   if (autosave) {
@@ -59,21 +67,27 @@ export function create_file(mp3_path: string, bars: number[],
 export function open_file(mp3_path: string): DocumentState {
   document_path = get_document_path(mp3_path);
   const json = JSON.parse(fs.readFileSync(document_path).toString());
-  document_state = { bars: json.bars };
+
+  if (json.version < 2) {
+    document_state = { ...DEFAULT_STATE, bars: json.bars };
+  } else {
+    document_state = json.data;
+  }
+
   history_reset();
   save_file();
   return document_state;
 }
 
 function save_file(): void {
-  const data = { version: VERSION, bars: document_state.bars };
   const dir_path = path.dirname(document_path);
+  const json = {version: VERSION, data: document_state};
 
   if (!fs.existsSync(dir_path)) {
     fs.mkdirSync(dir_path, {recursive: true});
   }
 
-  fs.writeFile(document_path, JSON.stringify(data), () => {});
+  fs.writeFile(document_path, JSON.stringify(json, null, 2), () => {});
 
   if (autosave_timeout_id !== undefined) {
     window.clearTimeout(autosave_timeout_id);
@@ -86,7 +100,7 @@ export function close_file(): void {
   save_file();
   window.clearTimeout(autosave_timeout_id);
   history = [];
-  document_state = { bars: [] };
+  document_state = Object.assign({}, DEFAULT_STATE);
 }
 
 
@@ -96,8 +110,8 @@ function history_reset(): void {
   history_step = 0;
 }
 
-function history_push(new_state: DocumentState): DocumentState {
-  document_state = new_state;
+function history_push(new_state: object): DocumentState {
+  document_state = {...document_state, ...new_state};
   history.length = history_step + 1;
   history.push(document_state);
   history_step += 1;
@@ -170,4 +184,8 @@ export function replace_bar(location: number, time: number, move_all: boolean): 
   let modify = (x: number): number => { return (move_all) ? time - bars[location] + x : x; };
   bars = [...bars.slice(0, location), time, ...bars.slice(location + 1).map(modify)];
   return history_push({ bars });
+}
+
+export function set_start_offset(start_offset: number): DocumentState {
+  return history_push({ start_offset });
 }
