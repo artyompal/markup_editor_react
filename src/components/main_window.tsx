@@ -517,7 +517,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
     return (
       <div className="scores">
-        <span>{`Measure ${this.state.cur_measure}`}</span><br/>
+        <span>{`Measure ${measure_idx}`}</span><br/>
         {(fs.existsSync(image_path)) ? (<img src={'file://' + image_path} />) : null}
       </div>
     );
