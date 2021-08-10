@@ -138,7 +138,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
   launch_scores_renderer(tab_path: string): void {
     this.scores_wildcard = this.get_scores_wildcard(tab_path);
-    console.log('running scores generator for', tab_path, this.scores_wildcard);
+    console.log('running scores renderer for', this.scores_wildcard, tab_path);
     const child = child_process.spawn('python',
                                       ['scores_worker.py', this.scores_wildcard, tab_path],
                                       {cwd: 'src/python'});

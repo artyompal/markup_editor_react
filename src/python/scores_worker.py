@@ -11,6 +11,30 @@ from typing import *
 def replace_ext(path: str, new_extension: str) -> str:
     return os.path.splitext(path)[0] + new_extension
 
+def handle_output_images(measure_img_path: str) -> None:
+    ''' Output is files like filename-1.png, filename-2.png and so on for every page.
+    Pick the biggest, rename it and delete the rest. '''
+
+    path, ext = os.path.splitext(measure_img_path)
+    extra_idx = 1
+    files = []
+
+    while os.path.exists(path + str(-extra_idx) + ext):
+        files.append(path + str(-extra_idx) + ext)
+        extra_idx += 1
+
+    if not files:
+        raise RuntimeError('output is empty for ' + measure_img_path)
+
+    sizes = list(map(os.path.getsize, files))
+    biggest = sizes.index(max(sizes))
+
+    os.rename(files[biggest], measure_img_path)
+
+    for idx, image in enumerate(files):
+        if idx != biggest:
+            os.unlink(image)
+
 def process_all_measures(src: Any, image_path_fmt: str) -> None:
     measure_idx = 0
     stop = False
@@ -37,9 +61,6 @@ def process_all_measures(src: Any, image_path_fmt: str) -> None:
         measure_img_path = image_path_fmt % measure_idx
         measure_xml_path = replace_ext(measure_img_path, '.xml')
 
-        path, ext = os.path.splitext(measure_img_path)
-        out_path = path + '-1' + ext
-
         if os.path.exists(measure_img_path):
             continue
 
@@ -53,12 +74,7 @@ def process_all_measures(src: Any, image_path_fmt: str) -> None:
             print('error while converting to PNG')
             return
 
-        os.rename(out_path, measure_img_path)
-        extra_idx = 2
-
-        while os.path.exists(path + str(-extra_idx) + ext):
-            os.unlink(path + str(-extra_idx) + ext)
-            extra_idx += 1
+        handle_output_images(measure_img_path)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
