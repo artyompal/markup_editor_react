@@ -152,10 +152,10 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
                                       {cwd: 'src/python'});
 
     child.on('exit', (code: number) => {
-      console.log('scores generator exited');
+      console.log('scores renderer exited');
 
       if (code !== 0) {
-        console.error('score renderer generator returned an error', code);
+        console.error('score renderer returned an error', code);
         console.error('stderr');
         console.error(this.safe_tostring(child.stderr.read()));
         console.error('stdout');
@@ -350,14 +350,14 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
         <div className="toolbar">
           {
             (this.state.final ?
-              (<Tooltip title="Make non-final file">
-                <IconButton aria-label="Make non_final file" disableRipple={true}
+              (<Tooltip title="Mark as non-final">
+                <IconButton aria-label="Mark as non-final" disableRipple={true}
                   onClick={() => { this.setState(editor.make_final(false)) }} >
                     <CheckBoxOutlineBlankIcon />
                 </IconButton>
               </Tooltip>) :
-              (<Tooltip title="Make final">
-                <IconButton aria-label="Make final file" disableRipple={true}
+              (<Tooltip title="Mark as final">
+                <IconButton aria-label="Mark as final" disableRipple={true}
                   onClick={() => { this.setState(editor.make_final(true)) }} >
                     <CheckBoxIcon />
                 </IconButton>
