@@ -2,8 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import * as utils from './utils';
-
-import {MP3_BASE_PATH, RESULTS_PATH} from '../logic/settings';
+import * as settings from '../logic/settings';
 
 
 const VERSION = 1;
@@ -22,25 +21,31 @@ let document_path = '';
 
 let autosave_timeout_id: number | undefined;
 
+let mp3_to_tags: Map<string, string> = new Map();
 
-function get_document_path(file_path: string, suffix: string): string {
-  file_path = fs.realpathSync(file_path);
 
-  if (file_path.startsWith(MP3_BASE_PATH)) {
-    file_path = file_path.substr(MP3_BASE_PATH.length)
+function get_document_path(mp3_path: string): string {
+  if (!mp3_to_tags.has(mp3_path)) {
+    console.error(mp3_path, 'not found');
+    throw new Error(mp3_path);
   }
 
-  return path.join(RESULTS_PATH, file_path + suffix);
+  return path.join(settings.RESULTS_PATH, mp3_to_tags.get(mp3_path) + EXTENSION);
 }
 
+export function save_songs_table(table: any) {
+  for (const song of table) {
+    mp3_to_tags.set(song.mp3, song.tags[0] + ' - ' + song.tags[1]);
+  }
+}
 
 export function have_file(mp3_path: string): boolean {
-  return fs.existsSync(get_document_path(mp3_path, EXTENSION));
+  return fs.existsSync(get_document_path(mp3_path));
 }
 
 export function create_file(mp3_path: string, bars: number[],
                             autosave: boolean = true): DocumentState {
-  document_path = get_document_path(mp3_path, EXTENSION);
+  document_path = get_document_path(mp3_path);
   document_state = { bars };
   history_reset();
 
@@ -52,7 +57,7 @@ export function create_file(mp3_path: string, bars: number[],
 }
 
 export function open_file(mp3_path: string): DocumentState {
-  document_path = get_document_path(mp3_path, EXTENSION);
+  document_path = get_document_path(mp3_path);
   const json = JSON.parse(fs.readFileSync(document_path).toString());
   document_state = { bars: json.bars };
   history_reset();

@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import React from 'react';
 
-import {CACHE_PATH} from '../logic/settings';
-
+import * as settings from '../logic/settings';
+import {save_songs_table} from '../logic/editor';
 
 interface FileTableProps {
   main_window: any;
@@ -23,8 +23,9 @@ export default class FileTable extends React.Component<FileTableProps, FileTable
   constructor(props: FileTableProps) {
     super(props);
 
-    const content = fs.readFileSync(path.join(CACHE_PATH, 'scores_database.json'));
+    const content = fs.readFileSync(path.join(settings.RESULTS_PATH, 'scores_database.json'));
     const songs = JSON.parse(content.toString());
+    save_songs_table(songs);
     this.state = {songs: songs};
   }
 
