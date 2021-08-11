@@ -259,6 +259,7 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   on_key_down = (e: React.KeyboardEvent): void => {
     switch (e.key) {
       case ' ':
+        e.preventDefault();
         e.stopPropagation();
         this.toggle_playback();
         break;
