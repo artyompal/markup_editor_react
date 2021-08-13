@@ -30,12 +30,18 @@ export function parse_scores(tab_path: string): void {
           last_repeat = measure_idx;
         } else if (repeat_dir === 'backward') {
           // unroll repeated measures
+          if (last_ending == 0) {
+            last_ending = measure_idx + 1;
+          }
+
           if (last_repeat < last_ending) {
             for (let idx = last_repeat; idx < last_ending; idx += 1) {
               logical_idx += 1;
               logical_measures[logical_idx] = idx;
             }
           }
+
+          last_ending = 0;
         }
       }
 
