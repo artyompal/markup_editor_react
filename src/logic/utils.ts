@@ -1,3 +1,7 @@
+import child_process from 'child_process';
+import fs from 'fs';
+import path from 'path';
+
 
 // Returns index of the first index that is greater than or equal to the given number,
 // or arr.length if there's no such index.
@@ -48,3 +52,34 @@ export function coord2time(holder: any, coord: number, logical_width: number,
   return (holder.current.scrollLeft + coord) / logical_width * duration;
 }
 
+
+export function safe_tostring(s: any): string {
+  return (s ? s.toString() : '')
+}
+
+export function read_from_disk_or_archive(filename: string): string {
+  if (fs.existsSync(filename)) {
+    return fs.readFileSync(filename).toString();
+  }
+
+  const rel_path = filename.substr(filename.indexOf('MusicXML'));
+  filename = path.join('/tmp', rel_path);
+
+  try {
+    fs.unlinkSync(filename);
+  } catch (e) {
+  }
+
+  const child = child_process.spawnSync('unzip',
+                                        ['data/guitar/musicxml.zip', rel_path, '-d', '/tmp']);
+
+  if (child.status !== 0) {
+    console.error('unzip returned an error');
+    console.error('stderr');
+    console.error(child.stderr.toString());
+    console.error('stdout');
+    console.error(child.stdout.toString());
+  }
+
+  return fs.readFileSync(filename).toString();
+}

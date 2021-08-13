@@ -33,7 +33,10 @@ import 'react-h5-audio-player/lib/styles.css'
 
 import Spectrogram from './spectrogram';
 import FileTable from './file_table';
+
 import * as editor from '../logic/editor';
+import * as utils from '../logic/utils';
+import * as musicxml from '../logic/musicxml';
 
 import {CACHE_PATH, MP3_BASE_PATH} from '../logic/settings';
 
@@ -99,8 +102,6 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
     return path.join(CACHE_PATH, file_path + suffix);
   }
 
-  safe_tostring = (s: any): string => { return (s ? s.toString() : '') }
-
   get_scores_wildcard(file_path: string): string {
     return path.join(CACHE_PATH, 'scores', file_path + '-%d.png');
   }
@@ -137,9 +138,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       } else {
         console.error('spectrogram generator returned an error', code);
         console.error('stderr');
-        console.error(this.safe_tostring(child.stderr.read()));
+        console.error(utils.safe_tostring(child.stderr.read()));
         console.error('stdout');
-        console.error(this.safe_tostring(child.stdout.read()));
+        console.error(utils.safe_tostring(child.stdout.read()));
       }
     });
   }
@@ -157,9 +158,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       if (code !== 0) {
         console.error('score renderer returned an error', code);
         console.error('stderr');
-        console.error(this.safe_tostring(child.stderr.read()));
+        console.error(utils.safe_tostring(child.stderr.read()));
         console.error('stdout');
-        console.error(this.safe_tostring(child.stdout.read()));
+        console.error(utils.safe_tostring(child.stdout.read()));
       }
     });
 
@@ -196,9 +197,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
       } else {
         console.error('beat detector returned an error', code);
         console.error('stderr');
-        console.error(this.safe_tostring(child.stderr.read()));
+        console.error(utils.safe_tostring(child.stderr.read()));
         console.error('stdout');
-        console.error(this.safe_tostring(child.stdout.read()));
+        console.error(utils.safe_tostring(child.stdout.read()));
       }
     });
   }
@@ -215,6 +216,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
 
     this.generate_spectrogram(mp3_path);
     this.launch_scores_renderer(tab_path);
+
+    musicxml.parse_scores(tab_path);
 
     if (editor.have_file(mp3_path)) {
       this.setState(editor.open_file(mp3_path));
@@ -316,9 +319,9 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
         } else {
           console.error('unzip returned an error', code);
           console.error('stderr');
-          console.error(this.safe_tostring(child.stderr.read()));
+          console.error(utils.safe_tostring(child.stderr.read()));
           console.error('stdout');
-          console.error(this.safe_tostring(child.stdout.read()));
+          console.error(utils.safe_tostring(child.stdout.read()));
           }
         });
     }
@@ -513,7 +516,8 @@ export default class MainWindow extends React.Component<MainWindowProps, MainWin
   }
 
   render_scores(): React.ReactNode {
-    const measure_idx = this.state.start_offset + this.state.cur_measure;
+    const measure_idx = musicxml.logical_measure_idx_to_real(
+                          this.state.start_offset + this.state.cur_measure);
     const image_path = this.scores_wildcard.replace('%d', measure_idx.toString());
 
     return (

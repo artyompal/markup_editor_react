@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise>
+  <part id="P1">
+    <measure number="1">
+    </measure>
+    <measure number="2">
+    </measure>
+    <measure number="3">
+    </measure>
+    <measure number="4">
+    </measure>
+
+    <measure number="5">
+      <barline location="left">
+        <bar-style>heavy-light</bar-style>
+        <repeat direction="forward"/>
+      </barline>
+    </measure>
+    <measure number="6">
+    </measure>
+    <measure number="7">
+      <barline location="left">
+        <ending number="1" type="start"/>
+      </barline>
+      <barline location="right">
+        <ending number="1" type="discontinue"/>
+      </barline>
+    </measure>
+    <measure number="8">
+      <barline location="right">
+        <bar-style>light-heavy</bar-style>
+        <repeat direction="backward"/>
+      </barline>
+    </measure>
+
+    <measure number="9">
+      <barline location="left">
+        <ending number="2" type="start"/>
+      </barline>
+    </measure>
+    <measure number="10">
+    </measure>
+    <measure number="11">
+    </measure>
+    <measure number="12">
+    </measure>
+  </part>
+</score-partwise>
