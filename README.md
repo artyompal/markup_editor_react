@@ -8,4 +8,4 @@
 
 ## Music markup editor
 
-This is a tool to examing/create/edit markup for music scores.
+This is a tool for examining/creating/editing markup for music sheets.
